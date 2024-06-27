@@ -6,6 +6,11 @@
       {{ word.lem }}, {{ word.pos }}, {{ word.synset }}, {{ word.declination }} - {{ word.definition }}
     </li>
   </ol>
+  <div v-if="translation" class="word-element">
+    <p>Translation for: {{ translation.word }}</p>
+    <p>{{ translation.translation }}</p>
+  </div>
+  <input type="button" value="save">
 </template>
 
 <script>
@@ -16,6 +21,7 @@ export default {
   data() {
     return {
       error: '',
+      translation: '',
       wordStr: '',
       wordsList: []
     }
@@ -33,6 +39,12 @@ export default {
         .then(response => response.json())
         .then(data => (this.wordsList = data))
         .catch(err => this.error = err)
+
+        fetch(`${process.env.VUE_APP_API_URL}/dictionary/find/${this.wordStr}`)
+        .then(response => response.json())
+        .then(data => (this.translation = data))
+        .catch(err => this.error = err)
+
       }
     }
   }

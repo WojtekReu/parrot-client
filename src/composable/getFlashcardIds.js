@@ -10,7 +10,12 @@ const getFlashcardIds = (bookId) => {
       .then(response => response.json())
       .then(data => book.value = data)
       .catch(err => error.value = err.message)
-    await fetch(`${process.env.VUE_APP_API_URL}/books/${bookId}/flashcards`)
+    await fetch(
+      `${process.env.VUE_APP_API_URL}/books/${bookId}/flashcards`,
+      {
+        credentials: "include",
+      }
+    )
     .then(response => response.json())
     .then(data => flashcards.value = data)
     .catch(err => error.value = err.message)

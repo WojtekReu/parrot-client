@@ -146,7 +146,12 @@ export default {
       }
       if (flashcardId !== '' && flashcardId) {
         this.error = null
-        await fetch(`${process.env.VUE_APP_API_URL}/flashcards/${flashcardId}`)
+        await fetch(
+          `${process.env.VUE_APP_API_URL}/flashcards/${flashcardId}`,
+          {
+            credentials: "include",
+          }
+        )
           .then(response => response.json())
           .then(data => this.flashcard = data)
           .catch(err => this.error = err.message)
@@ -158,7 +163,10 @@ export default {
             .then(data => this.sentences = data)
             .catch(err => this.error = err.message)
           await fetch(
-            `${process.env.VUE_APP_API_URL}/flashcards/${this.flashcard.id}/words`
+            `${process.env.VUE_APP_API_URL}/flashcards/${this.flashcard.id}/words`,
+            {
+              credentials: "include",
+            }
           )
             .then(response => response.json())
             .then(data => this.wordsFlashcard = data)
@@ -219,7 +227,12 @@ export default {
         .catch(err => this.error = err.message)
     },
     async showDefinition() {
-      await fetch(`${process.env.VUE_APP_API_URL}/flashcards/${this.flashcard.id}/words`)
+      await fetch(
+        `${process.env.VUE_APP_API_URL}/flashcards/${this.flashcard.id}/words`,
+          {
+            credentials: "include",
+          }
+      )
         .then(response => response.json())
         .then(data => this.words = data)
         .catch(err => this.error = err.message)
