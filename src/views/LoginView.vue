@@ -14,11 +14,12 @@
       </div>
       <div>
         <input type="submit" value="login">
-        <input type="button" value="checkme" @click="checkMe">
+        <input type="button" value="logout" @click="logoutAction">
       </div>
     </form>
+    <div v-if="message">Message: {{ message }}</div>
     <div v-if="error">Error: {{ error }}</div>
-    <div v-if="user">User: {{ user.id }} {{ user.username }} {{ user.first_name }} {{ user.last_name }}</div>
+    <div v-if="user">User:{{ user.id }} {{ user.username }} {{ user.first_name }} {{ user.last_name }}</div>
   </div>
 </template>
 
@@ -34,6 +35,7 @@ export default {
         username: "",
         password: "",
       },
+      message: "",
       user: null,
     }
   },
@@ -49,9 +51,14 @@ export default {
           credentials: "include",
         }
       )
+      .then(response => response.json())
+      .then(data => {
+        this.message = data
+        this.getLoggedUser()
+      })
       .catch(err => this.error = err.message)
     },
-    checkMe() {
+    getLoggedUser() {
       fetch(
         `${process.env.VUE_APP_API_URL}/users/users/whoami`,
         {
@@ -61,6 +68,20 @@ export default {
       .then(response => response.json())
       .then(data => this.user = data)
       .catch(err => this.error = err.message)
+    },
+    logoutAction() {
+      fetch(
+      `${process.env.VUE_APP_API_URL}/logout`,
+        {
+          method: "POST",
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+          credentials: "include",
+        }
+      )
+      .then(response => response.json())
+      .then(data => this.message = data)
+      .catch(err => this.error = err.message)
+      this.user = null
     }
   }
 }
