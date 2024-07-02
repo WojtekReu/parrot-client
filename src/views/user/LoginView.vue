@@ -1,28 +1,26 @@
 <template>
-  <p>Login page</p>
-  <div>
-
-    <div v-if="data">data: {{ data.body }}</div>
+  <div class="content-medium">
+    <h1>Login page</h1>
     <form @submit="loginAction">
-      <div>
-        <label for="username">username:</label>
-        <input type="text" name="username" v-model="form.username">
+      <div class="form-row">
+        <label for="username" class="form-label mt-4 required">username</label>
+        <input type="text" name="username" v-model="form.username" class="form-control">
       </div>
-      <div>
-        <label for="password">password:</label>
-        <input type="password" name="password" v-model="form.password">
+      <div class="form-row">
+        <label for="password" class="form-label mt-4 required">password</label>
+        <input type="password" name="password" v-model="form.password" class="form-control">
       </div>
-      <div>
-        <input type="submit" value="login">
-        <input type="button" value="logout" @click="logoutAction">
+      <div v-if="error" class="invalid-feedback" style="display: block;">
+        {{ error }}
+      </div>
+      <div class="d-grid gap-2 mt-4">
+        <input type="submit" value="login" class="btn btn-primary">
       </div>
     </form>
-    <div v-if="message">Message: {{ message }}</div>
     <div v-if="error">Error: {{ error }}</div>
     <div v-if="user">User:{{ user.id }} {{ user.username }} {{ user.first_name }} {{ user.last_name }}</div>
   </div>
 </template>
-
 <script>
 
 export default {
@@ -35,13 +33,13 @@ export default {
         username: "",
         password: "",
       },
-      message: "",
       user: null,
     }
   },
   methods: {
     loginAction(submitEvent) {
       submitEvent.preventDefault()
+      this.error = ""
       fetch(
         `${process.env.VUE_APP_API_URL}/login`,
         {
@@ -51,37 +49,15 @@ export default {
           credentials: "include",
         }
       )
-      .then(response => response.json())
-      .then(data => {
-        this.message = data
-        this.getLoggedUser()
+      .then(response => response.json().then(data => ({status: response.status, body: data})))
+      .then(obj => {
+        if (obj.status !== 200) {
+          this.error = obj.body.detail
+        } else {
+          window.location = "/account"
+        }
       })
       .catch(err => this.error = err.message)
-    },
-    getLoggedUser() {
-      fetch(
-        `${process.env.VUE_APP_API_URL}/users/users/whoami`,
-        {
-          credentials: "include",
-        }
-      )
-      .then(response => response.json())
-      .then(data => this.user = data)
-      .catch(err => this.error = err.message)
-    },
-    logoutAction() {
-      fetch(
-      `${process.env.VUE_APP_API_URL}/logout`,
-        {
-          method: "POST",
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          credentials: "include",
-        }
-      )
-      .then(response => response.json())
-      .then(data => this.message = data)
-      .catch(err => this.error = err.message)
-      this.user = null
     }
   }
 }

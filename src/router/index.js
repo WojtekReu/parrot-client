@@ -8,6 +8,11 @@ const routes = [
     component: HomeView
   },
   {
+    path: '/account',
+    name: 'account',
+    component: () => import(/* webpackChunkName: "account" */ '../views/user/CurrentUser.vue')
+  },
+  {
     path: '/books',
     name: 'books',
     component: () => import(/* webpackChunkName: "books" */ '../views/book/ListView.vue')
@@ -19,9 +24,19 @@ const routes = [
     props: true
   },
   {
+    path: '/flashcards',
+    name: 'flashcards',
+    component: () => import(/* webpackChunkName: "flashcards" */ '../views/flashcard/ListView.vue')
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '../views/user/LoginView.vue')
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: () => import(/* webpackChunkName: "logout" */ '../views/user/LogoutView.vue')
   },
   {
     path: '/register',

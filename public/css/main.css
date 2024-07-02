@@ -1,0 +1,17 @@
+.content-medium {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-row {
+  text-align: left;
+}
+
+.required:after {
+  content: " *";
+  color: red;
+}
+
+nav a.router-link-exact-active {
+  color: #62f5a3 !important;;
+}
