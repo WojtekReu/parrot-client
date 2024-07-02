@@ -1,13 +1,22 @@
 <template>
-  <div v-if="error">{{ error }}</div>
-  Words list
-  <input type="text" v-model="wordsFilter" @keyup="searchWords()">
-  <input type="button" value="clear" @click="clear">
-  <ol>
-    <li v-for="word in wordsList" :key="word.id" class="word-element">
-      {{ word.lem }}, {{ word.pos }}, {{ word.synset }}, {{ word.declination }} - {{ word.definition }}
-    </li>
-  </ol>
+  <div class="content-medium">
+    <h1>Words</h1>
+    <div class="form-row">
+      <label for="username" class="form-label mt-4 required">search word</label>
+      <input type="text" name="username" v-model="wordsFilter" class="form-control"  @keyup="searchWords()">
+    </div>
+    <div class="form-check-reverse mt-4">
+      <input type="button" value="clear" class="btn btn-secondary" @click="clear">
+    </div>
+    <div v-if="error" class="invalid-feedback" style="display: block;">
+      {{ error }}
+    </div>
+    <ol>
+      <li v-for="word in wordsList" :key="word.id" class="word-element">
+        {{ word.lem }}, {{ word.pos }}, {{ word.synset }}, {{ word.declination }} - {{ word.definition }}
+      </li>
+    </ol>
+  </div>
 </template>
 
 <script>
@@ -22,7 +31,8 @@ export default {
   },
   methods: {
     clear() {
-      this.wordsFilter = ''
+      this.wordsFilter = '',
+      this.wordsList = []
     },
     async searchWords() {
       if (this.wordsFilter) {

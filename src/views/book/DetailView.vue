@@ -1,91 +1,95 @@
 <template>
-  <div v-if="error">{{ error }}</div>
-  <div v-if="book">
-    <h3>{{ book.title }} - {{ book.author }}</h3>
-  </div>
-  <p>
-    flashcard nr:
-    <input type="text" class="flashcardNr" v-model="flashcardNr" @keypress="getNextFlashcard">
-    <input type="hidden" v-model="flashcardNrHidden">
-    <input type="button" @click="getNextTranslation" value="Next">
-  </p>
-  <div>Your results: <span class="correct">{{ correctResults }}</span> / {{ totalResults }}</div>
-  <div v-if="flashcardNrHidden" class="flashcard">
-    <div v-if="error"></div>
-    <div v-else-if="!status">Loading...</div>
-    <div v-else>
-      <div v-if="sentences">
-        <ol class="sentences">
-          <li v-for="sentence in sentences" :key="id">
-            {{ sentence.sentence }}
-          </li>
-        </ol>
-      </div>
-      <p>
-        <span class="label">EN: </span> {{ flashcard.keyword }}
-      </p>
-      <p>
-        <span class="label">PL: </span>
-        <input type="text" v-focus v-model="typedText" @keypress="ready">
-      </p>
-      <div v-if="yourAnswer">
-        <p class="correct" v-if="flashcard.translations.includes(yourAnswer)">
-          <span class="label">Correct! </span> {{ yourAnswer }}
-        </p>
-        <div v-else>
-          <div class="incorrect"><span class="label">Your:</span>{{ yourAnswer }}</div>
-          <div v-for="translation in flashcard.translations"><span class="label">Should be:</span>{{
-    translation }}</div>
-        </div>
-      </div>
-      <input type="button" @click="editWords" value="Edit Words">
-      <input type="button" @click="editTranslation" value="Edit Translation">
-      <input type="button" @click="showDefinition" value="Show">
-      <div v-if="showEditTranslation">
-        <form @submit="saveTranslation">
-          <p>{{ flashcard.keyword }}</p>
-          <div v-for="translation in flashcard.translations" :key="id">
-            <input type="text" name="translation[]" :value="translation">
-          </div>
-          <input type="button" @click="addTranslation" value="+">
-          <input type="button" @click="removeTranslation" value="-"><br>
-          <input type="submit" @click="saveTranslation" value="save">
-        </form>
-      </div>
-      <div v-if="words.length > 0">
-        <ul>
-          <li v-for="w1 in words" :key="id">{{ w1.lem }} - {{ w1.synset }} - {{ w1.definition }}</li>
-        </ul>
-      </div>
-      <div v-if="showEditWords">
-        <form @submit="saveChanges">
-          words:
-          <span v-for="wf in wordsFlashcard" :key="id" class="wordFlashcard">
-            <input type="radio" name="wordFlashcard" :value="wf.id" v-model="wordFlashcardInput"
-              :checked="this.wordsFlashcard[0] == wf" @change="getSentencesForWord(wf.id)">{{ wf.lem }}
-          </span>
+  <div class="content-medium">
+    <div v-if="book">
+      <h1>{{ book.title }} - {{ book.author }}</h1>
+    </div>
+    <p>
+      flashcard nr:
+      <input type="text" class="flashcardNr" v-model="flashcardNr" @keypress="getNextFlashcard">
+      <input type="hidden" v-model="flashcardNrHidden">
+      <input type="button" @click="getNextTranslation" value="Next">
+    </p>
+    <div>Your results: <span class="correct">{{ correctResults }}</span> / {{ totalResults }}</div>
+    <div v-if="flashcardNrHidden" class="flashcard">
+      <div v-if="error"></div>
+      <div v-else-if="!status">Loading...</div>
+      <div v-else>
+        <div v-if="sentences">
           <ol class="sentences">
-            <li v-for="sentence in sentencesForWord" :key="id">
-              <input type="button" @click="getWordDefinition(sentence.id)" value="Check">
-              <input type="checkbox" checked="true" name="sentence[]" :value="sentence.id">
+            <li v-for="sentence in sentences" :key="id">
               {{ sentence.sentence }}
             </li>
           </ol>
-          <div v-if="word">word.lem = {{ word.lem }}</div>
-          <div v-if="synsets.length">
-            <ol>
-              <li v-for="synset in synsets">
-                <input type="radio" :checked="synset[0]" name="synset" :value="synset[1]"> {{ synset[1]
-                }} - {{ synset[2] }}
+        </div>
+        <p>
+          <span class="label">EN: </span> {{ flashcard.keyword }}
+        </p>
+        <p>
+          <span class="label">PL: </span>
+          <input type="text" v-focus v-model="typedText" @keypress="ready">
+        </p>
+        <div v-if="yourAnswer">
+          <p class="correct" v-if="flashcard.translations.includes(yourAnswer)">
+            <span class="label">Correct! </span> {{ yourAnswer }}
+          </p>
+          <div v-else>
+            <div class="incorrect"><span class="label">Your:</span>{{ yourAnswer }}</div>
+            <div v-for="translation in flashcard.translations"><span class="label">Should be:</span>{{
+      translation }}</div>
+          </div>
+        </div>
+        <input type="button" @click="editWords" value="Edit Words">
+        <input type="button" @click="editTranslation" value="Edit Translation">
+        <input type="button" @click="showDefinition" value="Show">
+        <div v-if="showEditTranslation">
+          <form @submit="saveTranslation">
+            <p>{{ flashcard.keyword }}</p>
+            <div v-for="translation in flashcard.translations" :key="id">
+              <input type="text" name="translation[]" :value="translation">
+            </div>
+            <input type="button" @click="addTranslation" value="+">
+            <input type="button" @click="removeTranslation" value="-"><br>
+            <input type="submit" @click="saveTranslation" value="save">
+          </form>
+        </div>
+        <div v-if="words.length > 0">
+          <ul>
+            <li v-for="w1 in words" :key="id">{{ w1.lem }} - {{ w1.synset }} - {{ w1.definition }}</li>
+          </ul>
+        </div>
+        <div v-if="showEditWords">
+          <form @submit="saveChanges">
+            words:
+            <span v-for="wf in wordsFlashcard" :key="id" class="wordFlashcard">
+              <input type="radio" name="wordFlashcard" :value="wf.id" v-model="wordFlashcardInput"
+                :checked="this.wordsFlashcard[0] == wf" @change="getSentencesForWord(wf.id)">{{ wf.lem }}
+            </span>
+            <ol class="sentences">
+              <li v-for="sentence in sentencesForWord" :key="id">
+                <input type="button" @click="getWordDefinition(sentence.id)" value="Check">
+                <input type="checkbox" checked="true" name="sentence[]" :value="sentence.id">
+                {{ sentence.sentence }}
               </li>
             </ol>
-            <div>
-              <input type="submit" @click="saveChanges()" value="Save">
-              <input type="button" @click="cancelChanges()" value="Cancel">
+            <div v-if="word">word.lem = {{ word.lem }}</div>
+            <div v-if="synsets.length">
+              <ol>
+                <li v-for="synset in synsets">
+                  <input type="radio" :checked="synset[0]" name="synset" :value="synset[1]"> {{ synset[1]
+                  }} - {{ synset[2] }}
+                </li>
+              </ol>
+              <div>
+                <input type="submit" @click="saveChanges()" value="Save">
+                <input type="button" @click="cancelChanges()" value="Cancel">
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
+    </div>
+    <div v-if="error" class="invalid-feedback" style="display: block;">
+      {{ error }}
     </div>
   </div>
 </template>

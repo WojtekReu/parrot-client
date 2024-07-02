@@ -1,6 +1,7 @@
 <template>
+  <h1>Parrot</h1>
   <div class="home">
-    <p>Parrot - Read books and learn English.</p>
+    <p>Choose your favourite book and practice your English skills.</p>
   </div>
 </template>
 

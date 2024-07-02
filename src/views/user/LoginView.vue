@@ -17,8 +17,6 @@
         <input type="submit" value="login" class="btn btn-primary">
       </div>
     </form>
-    <div v-if="error">Error: {{ error }}</div>
-    <div v-if="user">User:{{ user.id }} {{ user.username }} {{ user.first_name }} {{ user.last_name }}</div>
   </div>
 </template>
 <script>
