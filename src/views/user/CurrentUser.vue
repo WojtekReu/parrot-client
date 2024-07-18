@@ -27,7 +27,10 @@ export default {
       }
     )
     .then(response => response.json())
-    .then(data => this.store.currentUser = data)
+    .then((data) => {
+      this.store.currentUser = data
+      localStorage.setItem('username', data.username)
+    })
     .catch(err => this.error = err.message)
   }
 }

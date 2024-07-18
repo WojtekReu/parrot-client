@@ -13,14 +13,16 @@
         {{ word.lem }} ({{ word.pos }}): {{ word.definition }}
       </li>
     </ol>
-    <div v-if="store.currentUser">
+    <div v-if="username">
       <input type="button" value="save">
+    </div>
+    <div v-else>
+      <input type="button" value="save" disabled> Zaloguj się aby dodać słowo do listy fiszek.
     </div>
   </div>
 </template>
 
 <script>
-import { store } from '../../store'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -28,13 +30,14 @@ export default {
   data() {
     return {
       error: '',
-      store,
       translation: '',
+      username: null,
       wordStr: '',
       wordsList: []
     }
   },
   mounted() {
+    this.username = localStorage.getItem("username")
     this.searchWords()
   },
   methods: {

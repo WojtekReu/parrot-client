@@ -30,8 +30,8 @@ export default {
       .then(response => response.json())
       .then(data => this.message = data)
       .catch(err => this.error = err.message)
-      console.log(this.store)
       this.store.currentUser = null
+      localStorage.removeItem("username")
       window.location = "/"
     }
   }

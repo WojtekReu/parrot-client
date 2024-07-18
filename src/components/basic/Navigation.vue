@@ -17,7 +17,7 @@
             <router-link to="/flashcards" class="nav-link">Flashcards</router-link>
           </li>
         </ul>
-        <ul  v-if="store.currentUser" class="navbar-nav d-flex">
+        <ul  v-if="username" class="navbar-nav d-flex">
           <li class="nav-item">
             <router-link to="/account" class="nav-link">Account</router-link>
           </li>
@@ -39,13 +39,15 @@
 </template>
 
 <script>
-import { store } from '../../store'
 
 export default {
   data() {
     return {
-      store,
+      username: null
     }
+  },
+  mounted () {
+    this.username = localStorage.getItem('username')
   }
 }
 </script>
