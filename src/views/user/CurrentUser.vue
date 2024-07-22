@@ -21,7 +21,7 @@ export default {
   },
   mounted() {
     fetch(
-      `${process.env.VUE_APP_API_URL}/users/users/whoami`,
+      `${process.env.VUE_APP_API_URL}/users/whoami`,
       {
         credentials: "include",
       }
