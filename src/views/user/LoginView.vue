@@ -51,7 +51,9 @@ export default {
       .then(obj => {
         if (obj.status !== 200) {
           this.error = obj.body.detail
+          this.form.password = ""
         } else {
+          localStorage.setItem('username', this.form.username)
           window.location = "/account"
         }
       })
