@@ -2,20 +2,27 @@
   <h1>Flashcards</h1>
   <div v-if="username">
     <p>{{ username }}`s flashcards</p>
-    <table id="flashcards">
-      <tr>
-        <th>nr</th>
-        <th>flashcards</th>
-        <th>translations</th>
-      </tr>
-      <tr v-for="(flashcard, index) in flashcards" :key="flashcard.id">
-        <td>{{ index + 1 }}</td>
-        <td>{{ flashcard.keyword }}</td>
-        <td>
-          <div v-for="translation in flashcard.translations">{{ translation }}</div>
-        </td>
-      </tr>
-    </table>
+    <div v-if="flashcards">
+      <table id="flashcards">
+        <tr>
+          <th>nr</th>
+          <th>flashcards</th>
+          <th>translations</th>
+        </tr>
+        <tr v-for="(flashcard, index) in flashcards.items" :key="flashcard.id">
+          <td>{{ index + 1 }}</td>
+          <td>{{ flashcard.keyword }}</td>
+          <td>
+            <div v-for="translation in flashcard.translations">{{ translation }}</div>
+          </td>
+        </tr>
+      </table>
+      <div class="pagination-container">
+        <span v-if="flashcards.page > 1"><a :href="'?page=' + (flashcards.page - 1) + '&size=' + flashcards.size" class="pagination-page">&lt;&lt;</a></span>
+        <span class="pagination-space">total: {{ flashcards.total }}, &nbsp; page {{ flashcards.page }} of <a :href="'?page=' + (flashcards.pages) + '&size=' + flashcards.size" class="pagination-page">{{ flashcards.pages }}</a></span>
+        <span v-if="flashcards.page < flashcards.pages"><a :href="'?page=' + (flashcards.page + 1) + '&size=' + flashcards.size" class="pagination-page">&gt;&gt;</a></span>
+      </div>
+    </div>
   </div>
   <div v-else>
     <div class="login-box"><router-link to="/login">Login</router-link></div>
@@ -24,16 +31,21 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
 import getFlashcards from '@/composable/getFlashcards'
 
 export default {
   name: 'FlashcardsList',
   setup () {
-    const { flashcards, error, load } = getFlashcards(0,100)
+    const router = useRouter()
+    const query = router.currentRoute.value.query
+    let getToPage = query.page ? query.page : 1
+    let getSize = query.size ? query.size : 100
+    const { flashcards, error, load } = getFlashcards(getToPage,getSize)
     
     load()
 
-    return { flashcards, error}
+    return { flashcards, error }
   },
   data() {
     return {
@@ -41,6 +53,7 @@ export default {
     }
   },
   mounted() {
+
     this.username = localStorage.getItem('username')
   }
 }
@@ -60,5 +73,16 @@ export default {
 .login-box a {
   text-decoration: none;
   font-weight: bold;
+}
+.pagination-page {
+  margin: 0 10px;
+  font-weight: bold;
+}
+.pagination-space {
+  margin: 0 10% 30
+}
+.pagination-container {
+  margin-top: 10px;
+  margin-bottom: 40px;
 }
 </style>

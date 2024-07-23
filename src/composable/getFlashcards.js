@@ -1,12 +1,12 @@
 import { ref } from 'vue'
 
-const getFlashcards = (start, end) => {
+const getFlashcards = (page, size) => {
   const flashcards = ref(null)
   const error = ref(null)
 
   const load = async () => {
     await fetch(
-      `${process.env.VUE_APP_API_URL}/users/flashcards`,
+      `${process.env.VUE_APP_API_URL}/users/flashcards?page=${page}&size=${size}`,
       {
         credentials: "include",
       }
