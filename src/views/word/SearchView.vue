@@ -2,7 +2,7 @@
   <div id="container">
     <div v-if="error">{{ error }}</div>
     Search word: {{ wordStr }}
-    <div v-if="translation" class="word-element">
+    <div v-if="translation.definition" class="word-element">
       <div v-for="line in translation.definition.split('\n')">
         {{ line }}
       </div>
