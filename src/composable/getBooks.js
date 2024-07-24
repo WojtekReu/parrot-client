@@ -1,11 +1,17 @@
 import { ref } from 'vue'
 
-const getBooks = () => {
+const getBooks = (isPrivate) => {
   const books = ref([])
   const error = ref(null)
 
   const load = async () => {
-    await fetch(`${process.env.VUE_APP_API_URL}/books/all`)
+    let bookPath = isPrivate == true ? "users/books" : "books"
+    await fetch(
+      `${process.env.VUE_APP_API_URL}/${bookPath}`,
+      {
+        credentials: "include",
+      }
+    )
       .then(response => response.json())
       .then(data => books.value = data)
       .catch(err => error.value = err.message)

@@ -8,10 +8,10 @@
       <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link to="/books" class="nav-link">Books</router-link>
+            <router-link to="/words" class="nav-link">Words</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/words" class="nav-link">Words</router-link>
+            <router-link to="/account/books" class="nav-link">Books</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/flashcards" class="nav-link">Flashcards</router-link>
