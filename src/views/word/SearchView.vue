@@ -1,19 +1,27 @@
 <template>
   <div id="container">
-    <div v-if="error">{{ error }}</div>
-    Search word: {{ wordStr }}
-    <div v-if="translation.definition" class="word-element">
+    <p class="text-center">Translation for: <span class="keyword">{{ wordStr }}</span></p>
+    <div v-if="translation && translation.definition" class="word-element">
       <div v-for="line in translation.definition.split('\n')">
         {{ line }}
       </div>
     </div>
-    <p>Definitions:</p>
-    <ol>
-      <li v-for="word in wordsList" :key="word.id" class="word-element">
-        {{ word.lem }} ({{ word.pos }}): {{ word.definition }}
-      </li>
-    </ol>
+    <div v-if="words.length > 0">
+      <p class="text-center">Definitions:</p>
+      <ol>
+        <li v-for="word in words" :key="word.id" class="word-element">
+          {{ word.lem }} ({{ word.pos }}): {{ word.definition }}
+        </li>
+      </ol>
+    </div>
     <div v-if="username">
+      <div v-if="flashcards && flashcards.length > 0">
+        <p class="text-center">Your flashcards</p>
+        <div v-for="flashcard in flashcards" :key="flashcard.id" title="flashcard.keyword">
+          {{ flashcard.keyword }} - {{ flashcard.translations.toString() }}
+        </div>
+      </div>
+      <p class="text-center">Add flashcard</p>
       <form @submit="addFlascard">
         <div class="form-row">
           <label for="keyword" class="form-label mt-4 required">keyword</label>
@@ -23,62 +31,82 @@
           <label for="translations" class="form-label mt-4 required">translations</label>
           <input type="text" name="translations" v-model="form.translations" class="form-control">
         </div>
-        <div v-if="error" class="invalid-feedback" style="display: block;">
+        <div v-for="error in errors" class="invalid-feedback" style="display: block;">
           {{ error }}
         </div>
+        <div v-if="message" class="valid-feedback" style="display: block;">{{ message }}</div>
         <div class="d-grid gap-2 mt-4">
           <input type="submit" value="save" class="btn btn-primary">
         </div>
       </form>
     </div>
     <div v-else>
-      <input type="button" value="save" disabled> Zaloguj się aby dodać słowo do listy fiszek.
+      <div class="login-box"><router-link to="/login">Login</router-link></div>
+      Login to add flashcard to your flashcards.
     </div>
   </div>
 </template>
 
 <script>
+import findFlashcards from '@/composable/findFlashcards'
+import findTranslation from '@/composable/findTranslation'
+import findWords from '@/composable/findWords'
 import { useRouter } from 'vue-router'
 
 export default {
   name: 'WordsList',
   data() {
     return {
-      error: '',
+      errors: [],
+      flashcards: [],
       form: {
         keyword: null,
         translations: null,
       },
+      message: null,
       translation: '',
       username: null,
       wordStr: '',
-      wordsList: []
+      words: []
     }
   },
   mounted() {
-    this.username = localStorage.getItem("username")
-    this.searchWords()
+    const router = useRouter()
+    const query = router.currentRoute.value.query
+    if (query.q) {
+      this.form.keyword = this.wordStr = query.q
+      this.username = localStorage.getItem("username")
+      if (this.username) {
+        this.loadFlashcards()
+      }
+      this.loadTranslation()
+      this.loadWords()
+    }
   },
   methods: {
-    async searchWords() {
-      const router = useRouter()
-      const query = router.currentRoute.value.query
-      if (query.q) {
-        this.wordStr = query.q
-        await fetch(`${process.env.VUE_APP_API_URL}/words/find/${this.wordStr}`)
-        .then(response => response.json())
-        .then(data => (this.wordsList = data))
-        .catch(err => this.error = err)
-
-        await fetch(`${process.env.VUE_APP_API_URL}/translation/find/${this.wordStr}`)
-        .then(response => response.json())
-        .then((data) => {
-          this.translation = data
-          this.form.keyword = this.translation.word
-        })
-        .catch(err => this.error = err)
-
+    async loadFlashcards() {
+      const { flashcards, error, loadFindFlashcards } = findFlashcards(this.wordStr)
+      loadFindFlashcards()
+      if (error.value) {
+        this.errors.push(error)
       }
+      this.flashcards = flashcards
+    },
+    async loadTranslation() {
+      const { translation, error, loadFindTranslation } = findTranslation(this.wordStr)
+      loadFindTranslation()
+      if (error.value) {
+        this.errors.push(error)
+      }
+      this.translation = translation
+    },
+    async loadWords() {
+      const { words, error, loadFindWords } = findWords(this.wordStr)
+      loadFindWords()
+      if (error.value) {
+        this.errors.push(error)
+      }
+      this.words = words
     },
     async addFlascard(submitEvent) {
       submitEvent.preventDefault()
@@ -90,21 +118,32 @@ export default {
           credentials: "include",
         }
         await fetch(process.env.VUE_APP_API_URL + "/flashcards/", requestOptions)
-          .catch(err => this.error = err.message)
+          .then(response => response.json())
+          .then(data => this.message = `Saved translation '${data.translations[0]}' for word '${data.keyword}'`)
+          .catch(err => this.errors.push(err.message))
     }
   },
 }
 </script>
 
 <style>
+
 #container {
   text-align: left;
   margin: 5%
 }
+
+.keyword {
+  font-weight: bold;
+  color: maroon;
+}
+
 .word-element {
   text-align: left;
 }
+
 nav.navbar {
   display: none;
 }
+
 </style>
