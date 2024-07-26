@@ -6,7 +6,12 @@ const getFlashcardIds = (bookId) => {
   const error = ref(null)
 
   const load = async () => {
-    await fetch(`${process.env.VUE_APP_API_URL}/books/${bookId}`)
+    await fetch(
+      `${process.env.VUE_APP_API_URL}/books/${bookId}`,
+      {
+        credentials: "include",
+      }
+    )
       .then(response => response.json())
       .then(data => book.value = data)
       .catch(err => error.value = err.message)

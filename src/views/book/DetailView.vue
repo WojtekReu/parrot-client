@@ -161,7 +161,10 @@ export default {
           .catch(err => this.error = err.message)
         if (this.flashcard) {
           await fetch(
-            `${process.env.VUE_APP_API_URL}/books/${this.book.id}/flashcards/${flashcardId}/sentences`
+            `${process.env.VUE_APP_API_URL}/books/${this.book.id}/flashcards/${flashcardId}/sentences`,
+            {
+              credentials: "include",
+            }
           )
             .then(response => response.json())
             .then(data => this.sentences = data)
@@ -225,7 +228,12 @@ export default {
       this.showEditTranslation = true
     },
     async getSentencesForWord(wordId) {
-      await fetch(`${process.env.VUE_APP_API_URL}/words/${wordId}/sentences`)
+      await fetch(
+        `${process.env.VUE_APP_API_URL}/words/${wordId}/sentences`,
+          {
+            credentials: "include",
+          }
+      )
         .then(response => response.json())
         .then(data => this.sentencesForWord = data)
         .catch(err => this.error = err.message)
