@@ -257,8 +257,12 @@ export default {
         await fetch(`${process.env.VUE_APP_API_URL}/words/${wordId}/sentences/${sentence_id}/synset`)
           .then(response => response.json())
           .then(data => {
-            this.word = data.word,
-            this.synsets = data.synsets
+            if (data.errorMessage !== "") {
+              this.error = data.errorMessage
+            } else {
+              this.word = data.word,
+              this.synsets = data.synsets
+            }
           })
           .catch(err => this.error = err.message)
     },
