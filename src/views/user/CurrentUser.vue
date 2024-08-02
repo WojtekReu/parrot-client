@@ -6,6 +6,9 @@
       <p>First name: <span v-if="store.currentUser.first_name">{{ store.currentUser.first_name }}</span></p>
       <p>Last name: <span v-if="store.currentUser.last_name">{{ store.currentUser.last_name }}</span></p>
     </div>
+    <div v-if="error" class="invalid-feedback" style="display: block;">
+      {{ error }}
+    </div>
   </div>
 </template>
 
@@ -16,6 +19,7 @@ export default {
   name: 'CurrentUserView',
   data () {
     return {
+      error: null,
       store,
     }
   },
@@ -26,8 +30,20 @@ export default {
         credentials: "include",
       }
     )
-    .then(response => response.json())
-    .then(data => this.store.currentUser = data)
+    .then(response => {
+      let data = response.json()
+      if (response.status == 401) {
+        window.location = "/logout"
+      }
+      return data
+    })
+    .then(data => {
+      if (data.detail !== undefined && data.detail !== "") {
+        this.error = data.detail
+      } else {
+        this.store.currentUser = data
+      }
+    })
     .catch(err => this.error = err.message)
   }
 }
