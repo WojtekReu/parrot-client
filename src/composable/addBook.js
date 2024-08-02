@@ -17,9 +17,11 @@ const addBook = (form) => {
       .then(response => {
         if (response.status == 201) {
           message.value = 'Added new book'
-        } else {
-          error.value = response.text
         }
+        return response.json()
+      })
+      .then(data => {
+        error.value = data.detail
       })
       .catch(err => error.value = err.message)
   }

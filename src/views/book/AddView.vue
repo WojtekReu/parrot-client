@@ -42,13 +42,10 @@ export default {
       this.errors = []
       const { message, error, load } = addBook(this.form)
       load()
-      if (error.value) {
-        this.errors.push(error)
-      } else {
-        this.form.title = null
-        this.form.author = null
-        this.message = message
-      }
+      this.message = message
+      this.errors.push(error)
+      this.form.title = null
+      this.form.author = null
     }
   }
 }
