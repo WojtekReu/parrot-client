@@ -3,18 +3,24 @@
   <div v-if="error">
     {{ error }}
   </div>
-  <table class="book-list">
-    <tr>
-      <th>ID</th>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Sentences</th>
-      <th>Words</th>
-    </tr>
-    <tr v-for="book in books.items" :key="book.id">
-      <Book :book="book" />
-    </tr>
-  </table>
+  <div v-if="books.items && books.items.length > 0">
+    <table class="book-list">
+      <tr>
+        <th>Count</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Sentences</th>
+        <th>Words</th>
+      </tr>
+      <tr v-for="(book, index) in books.items" :key="book.id">
+        <Book :book="book" :count="index + 1" />
+      </tr>
+    </table>
+  </div>
+  <div v-else>
+    You do not have any book yet.
+  </div>
+  <router-link to="/book/add">Add book</router-link>
 </template>
 
 <script>

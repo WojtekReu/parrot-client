@@ -5,7 +5,7 @@
     <div v-if="flashcards">
       <table id="flashcards">
         <tr>
-          <th>nr</th>
+          <th>count</th>
           <th>flashcards</th>
           <th>translations</th>
         </tr>

@@ -1,5 +1,5 @@
 <template>
-  <td>{{ book.id }}</td>
+  <td>{{ count }}</td>
   <td><router-link :to="{ name: 'book', params: { id: book.id }}">{{ book.title }}</router-link></td>
   <td>{{ book.author }}</td>
   <td>{{ book.sentences_count }}</td>
@@ -8,6 +8,6 @@
 
 <script>
 export default {
-    props: ['book'],
+    props: ['book', 'count'],
 }
 </script>

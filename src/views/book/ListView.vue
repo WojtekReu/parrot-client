@@ -5,14 +5,14 @@
   </div>
   <table class="book-list">
     <tr>
-      <th>ID</th>
+      <th>Count</th>
       <th>Title</th>
       <th>Author</th>
       <th>Sentences</th>
       <th>Words</th>
     </tr>
-    <tr v-for="book in books" :key="book.id">
-      <Book :book="book" />
+    <tr v-for="(book, index) in books.items" :key="book.id">
+      <Book :book="book" :count="index + 1"/>
     </tr>
   </table>
 </template>
