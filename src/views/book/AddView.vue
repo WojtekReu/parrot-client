@@ -61,6 +61,7 @@ export default {
     },
     async loadBookContentAction(event) {
       const { message, load } = loadBookContentAction(this.book.id, event.target.files[0])
+      this.message2 = "Loading book. It could take quite a long time."
       load()
       this.message2 = message
     }

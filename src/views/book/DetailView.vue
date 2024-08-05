@@ -7,7 +7,7 @@
       flashcard nr:
       <input type="text" class="flashcardNr" v-model="flashcardNr" @keypress="getNextFlashcard">
       <input type="hidden" v-model="flashcardNrHidden">
-      <input type="button" @click="getNextTranslation" value="Next">
+      <input type="button" @click="getNextTranslation" value="Next" :disabled="nextDisabled">
     </p>
     <div>Your results: <span class="correct">{{ correctResults }}</span> / {{ totalResults }}</div>
     <div v-if="flashcardNrHidden" class="flashcard">
@@ -88,14 +88,12 @@
         </div>
       </div>
     </div>
-    <div v-if="error" class="invalid-feedback" style="display: block;">
-      {{ error }}
-    </div>
+    <div v-if="error" class="invalid-feedback" style="display: block;">{{ error }}</div>
+    <div v-if="message" class="valid-feedback" style="display: block;">{{ message }}</div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 import getFlashcardIds from '@/composable/getFlashcardIds'
 
 const focus = {
@@ -123,6 +121,7 @@ export default {
       flashcardNr: '',
       flashcardNrHidden: '',
       flashcard: null,
+      message: '',
       typedText: '',
       yourAnswer: '',
       rightAnswer: '',
@@ -138,17 +137,18 @@ export default {
       words: [],
       wordsFlashcard: [],
       wordFlashcardInput: 0,
+      nextDisabled: false,
     }
   },
   methods: {
     async fetchData() {
-      this.status = null
       this.yourAnswer = ''
       let flashcardId = ''
       if (this.flashcardNrHidden) {
-        flashcardId = this.flashcards[this.flashcardNrHidden]
+        flashcardId = this.flashcards[this.flashcardNrHidden -1]
       }
-      if (flashcardId !== '' && flashcardId) {
+      if (flashcardId !== '' && flashcardId !== undefined) {
+        this.status = null
         this.error = null
         await fetch(
           `${process.env.VUE_APP_API_URL}/flashcards/${flashcardId}`,
@@ -180,6 +180,14 @@ export default {
             .catch(err => this.error = err.message)
         }
         this.status = 'ready'
+        this.message = ''
+      } else {
+        if (flashcardId === undefined) {
+          this.error = " "
+          this.message = "You completed your flashcards"
+        } else {
+          this.message = "click next to show flashcard"
+        }
       }
     },
     ready(keyboardEvent) {
@@ -215,14 +223,20 @@ export default {
       this.synsets = []
       this.words = []
       this.wordFlashcardInput = 0
+      if (this.flashcardNrHidden - 1 === this.flashcards.length) {
+        this.nextDisabled = true
+      }
     },
     async editWords() {
       this.showEditWords = true
-      let wordId = this.wordsFlashcard[0].id
-      if (this.wordFlashcardInput) {
-        wordId = this.wordFlashcardInput
+      console.log(this.wordsFlashcard)
+      if (this.wordsFlashcard.length > 0) {
+        let wordId = this.wordsFlashcard[0].id
+        if (this.wordFlashcardInput) {
+          wordId = this.wordFlashcardInput
+        }
+        await this.getSentencesForWord(wordId)
       }
-      await this.getSentencesForWord(wordId)
     },
     editTranslation() {
       this.showEditTranslation = true
@@ -300,6 +314,7 @@ export default {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
+          credentials: "include",
         }
         await fetch(`${process.env.VUE_APP_API_URL}/words/${wordId}/update`, requestOptions)
           .catch(err => this.error = err.message)
@@ -312,6 +327,7 @@ export default {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data2),
+          credentials: "include",
         }
         await fetch(`${process.env.VUE_APP_API_URL}/words/${wordId}/sentences`, requestOptions2)
           .catch(err => this.error = err.message)
@@ -324,6 +340,7 @@ export default {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data3),
+          credentials: "include",
         }
         await fetch(`${process.env.VUE_APP_API_URL}/words/${wordId}/sentences`, requestOptions3)
           .catch(err => this.error = err.message)
@@ -343,10 +360,6 @@ export default {
     },
     async saveTranslation(submitEvent) {
       submitEvent.preventDefault()
-      let data4 = {
-        "flashcard": this.flashcard,
-      }
-
       let translationList = submitEvent.target.form.elements["translation[]"]
       if (translationList.value) {
         this.flashcard.translations = [translationList.value]
@@ -360,6 +373,7 @@ export default {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this.flashcard),
+        credentials: "include",
       }
       await fetch(`${process.env.VUE_APP_API_URL}/flashcards/${this.flashcard.id}/update`, requestOptions4)
         .catch(err => this.error = err.message)
