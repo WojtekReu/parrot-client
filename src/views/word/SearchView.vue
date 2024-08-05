@@ -10,7 +10,7 @@
       <p class="text-center">Definitions:</p>
       <ol>
         <li v-for="word in words" :key="word.id" class="word-element">
-          {{ word.lem }} ({{ word.pos }}): {{ word.definition }}
+          <input type="radio" :value="word.id" v-model="pickedWordId">  {{ word.lem }} ({{ word.pos }}): {{ word.definition }}
         </li>
       </ol>
     </div>
@@ -65,11 +65,11 @@ export default {
         translations: null,
       },
       message: null,
+      pickedWordId: null,
       translation: '',
       username: null,
       wordStr: '',
       words: [],
-      word: null,
     }
   },
   mounted() {
@@ -123,36 +123,27 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.flashcard = data
-
-            fetch(process.env.VUE_APP_API_URL + "/words/find/" + data.keyword)
+            const requestOptions2 = {
+              credentials: "include",
+            }
+            fetch(process.env.VUE_APP_API_URL + "/words/" + this.pickedWordId + "/sentences", requestOptions2)
               .then(response => response.json())
               .then(data => {
-                if (data.length > 0) {
-                  this.words = data
-                  const word = this.words[0]  // TODO: find the right word from many possibilities
-                  const requestOptions2 = {
+                const sentenceIds = []
+                data.forEach(element => {
+                  sentenceIds.push(element.id)
+                });
+                const sentencesLength = sentenceIds.length
+                if (sentencesLength > 0) {
+                  const requestOptions3 = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({"disconnect_ids": [], "sentence_ids": sentenceIds}),
                     credentials: "include",
                   }
-                  fetch(process.env.VUE_APP_API_URL + "/words/" + word.id + "/sentences", requestOptions2)
-                    .then(response => response.json())
-                    .then(data => {
-                      const sentenceIds = []
-                      data.forEach(element => {
-                        sentenceIds.push(element.id)
-                      });
-                      const sentencesLength = sentenceIds.length
-                      if (sentencesLength > 0) {
-                        const requestOptions3 = {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({"disconnect_ids": [], "sentence_ids": sentenceIds}),
-                          credentials: "include",
-                        }
-                        fetch(process.env.VUE_APP_API_URL + "/flashcards/" + this.flashcard.id + "/sentences", requestOptions3)
-                      }
-                      this.message = `Saved translation '${this.flashcard.translations}' for word '${this.flashcard.keyword}' and ${sentencesLength} sentences.`
-                    })
-                  }
+                  fetch(process.env.VUE_APP_API_URL + "/flashcards/" + this.flashcard.id + "/sentences", requestOptions3)
+                }
+                this.message = `Saved translation '${this.flashcard.translations}' for word '${this.flashcard.keyword}' and ${sentencesLength} sentences.`
               })
           })
           .catch(err => this.errors.push(err.message))
