@@ -123,28 +123,42 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.flashcard = data
-            const requestOptions2 = {
+            const wordIds = []
+            this.words.forEach(el => {
+              wordIds.push(el.id)
+            })
+            const requestOptions1 = {
+              method: "POST",
               credentials: "include",
+              headers: { "Content-Type": "application/json"},
+              body: JSON.stringify({"disconnect_ids": [], "word_ids": wordIds})
             }
-            fetch(process.env.VUE_APP_API_URL + "/words/" + this.pickedWordId + "/sentences", requestOptions2)
-              .then(response => response.json())
-              .then(data => {
-                const sentenceIds = []
-                data.forEach(element => {
-                  sentenceIds.push(element.id)
-                });
-                const sentencesLength = sentenceIds.length
-                if (sentencesLength > 0) {
-                  const requestOptions3 = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({"disconnect_ids": [], "sentence_ids": sentenceIds}),
-                    credentials: "include",
+            fetch(process.env.VUE_APP_API_URL + "/flashcards/" + data.id + "/words", requestOptions1)
+
+            if (this.pickedWordId !== null) {
+              const requestOptions2 = {
+                credentials: "include",
+              }
+              fetch(process.env.VUE_APP_API_URL + "/words/" + this.pickedWordId + "/sentences", requestOptions2)
+                .then(response => response.json())
+                .then(data => {
+                  const sentenceIds = []
+                  data.forEach(element => {
+                    sentenceIds.push(element.id)
+                  });
+                  const sentencesLength = sentenceIds.length
+                  if (sentencesLength > 0) {
+                    const requestOptions3 = {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({"disconnect_ids": [], "sentence_ids": sentenceIds}),
+                      credentials: "include",
+                    }
+                    fetch(process.env.VUE_APP_API_URL + "/flashcards/" + this.flashcard.id + "/sentences", requestOptions3)
                   }
-                  fetch(process.env.VUE_APP_API_URL + "/flashcards/" + this.flashcard.id + "/sentences", requestOptions3)
-                }
-                this.message = `Saved translation '${this.flashcard.translations}' for word '${this.flashcard.keyword}' and ${sentencesLength} sentences.`
-              })
+                  this.message = `Saved translation '${this.flashcard.translations}' for word '${this.flashcard.keyword}' and ${sentencesLength} sentences.`
+                })
+            }
           })
           .catch(err => this.errors.push(err.message))
     }

@@ -3,30 +3,36 @@
   <div v-if="error">
     {{ error }}
   </div>
-  <div v-if="books.items && books.items.length > 0">
-    <table class="book-list">
-      <tr>
-        <th>Count</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Sentences</th>
-        <th>Words</th>
-        <th>Reading</th>
-      </tr>
-      <tr v-for="(book, index) in books.items" :key="book.id">
-        <td>{{ index + 1 }}</td>
-        <td><router-link :to="{ name: 'book', params: { id: book.id }}">{{ book.title }}</router-link></td>
-        <td>{{ book.author }}</td>
-        <td>{{ book.sentences_count }}</td>
-        <td>{{ book.words_count }}</td>
-        <td><input type="checkbox" :value="book.id" v-model="currentlyReading" @change="updateBook"></td>
-      </tr>
-    </table>
+  <div v-if="username">
+    <div v-if="books.items && books.items.length > 0">
+      <table class="book-list">
+        <tr>
+          <th>Count</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Sentences</th>
+          <th>Words</th>
+          <th>Reading</th>
+        </tr>
+        <tr v-for="(book, index) in books.items" :key="book.id">
+          <td>{{ index + 1 }}</td>
+          <td><router-link :to="{ name: 'book', params: { id: book.id }}">{{ book.title }}</router-link></td>
+          <td>{{ book.author }}</td>
+          <td>{{ book.sentences_count }}</td>
+          <td>{{ book.words_count }}</td>
+          <td><input type="checkbox" :value="book.id" v-model="currentlyReading" @change="updateBook"></td>
+        </tr>
+      </table>
+    </div>
+    <div v-else>
+      You do not have any book yet.
+    </div>
+    <router-link to="/book/add">Add book</router-link>
   </div>
   <div v-else>
-    You do not have any book yet.
+    <div class="login-box"><router-link to="/login">Login</router-link></div>
+    <div>Login to see your books</div>
   </div>
-  <router-link to="/book/add">Add book</router-link>
 </template>
 
 <script>
@@ -42,6 +48,7 @@ export default {
     return {
       currentlyReading: [],
       update: null,
+      username: null,
     }
   },
   setup() {
@@ -58,6 +65,7 @@ export default {
     this.error = error
     const { update } = updateCurrentlyReading()
     this.update = update
+    this.username = localStorage.getItem('username')
   },
   methods: {
     async updateBook(event) {

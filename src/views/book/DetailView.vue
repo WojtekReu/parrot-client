@@ -84,6 +84,9 @@
                 <input type="button" @click="cancelChanges()" value="Cancel">
               </div>
             </div>
+            <div v-else-if="errorMessage" class="invalid-feedback" style="display: block;">
+              Dictionary endpoint connection problem: {{ errorMessage }}
+            </div>
           </form>
         </div>
       </div>
@@ -116,6 +119,7 @@ export default {
   data() {
     return {
       correctResults: 0,
+      errorMessage: null,
       totalResults: 0,
       status: null,
       flashcardNr: '',
@@ -272,7 +276,7 @@ export default {
           .then(response => response.json())
           .then(data => {
             if (data.errorMessage !== "") {
-              this.error = data.errorMessage
+              this.errorMessage = data.errorMessage
             } else {
               this.word = data.word,
               this.synsets = data.synsets
