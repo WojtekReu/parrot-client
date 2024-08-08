@@ -1,14 +1,17 @@
 import { ref } from 'vue'
 
-const uploadBook = (bookId, bookContent) => {
-  const message = ref({})
+const loadBookContent = () => {
+  const message2 = ref({})
   let status = null
 
-  const load = async () => {
+  const uploadBook = async (bookId, bookContent) => {
     const formData = new FormData()
     formData.append("name", bookContent["name"])
     formData.append("file", bookContent)
-
+    message2.value = {
+      text: "Loading book content...  It may take quite a long time.",
+      type: "loading",
+    }
     await fetch(
       `${process.env.VUE_APP_API_URL}/books/upload/${bookId}`,
       {
@@ -23,20 +26,20 @@ const uploadBook = (bookId, bookContent) => {
       })
       .then(data => {
         if (status === 200) {
-          message.value.text = "Loaded book content."
-          message.value.type = "success"
+          message2.value.text = "Loading completed."
+          message2.value.type = "success"
         } else {
-          message.value.text = data.detail
-          message.value.type = "error"
+          message2.value.text = data.detail
+          message2.value.type = "error"
         }
       })
       .catch(err => {
-        message.value.text = err.message
-        message.value.type = "error"
+        message2.value.text = err.message
+        message2.value.type = "error"
       })
   }
 
-  return { message, load }
+  return { message2, uploadBook }
 }
 
-export default uploadBook
+export default loadBookContent
