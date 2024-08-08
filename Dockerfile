@@ -1,5 +1,5 @@
 FROM node:latest as build-stage
-ENV VUE_APP_API_URL "http://192.168.5.233:8000/api/v2"
+ENV VUE_APP_API_URL "parrot-web"
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
