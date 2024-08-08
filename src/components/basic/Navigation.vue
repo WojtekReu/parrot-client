@@ -16,6 +16,9 @@
           <li class="nav-item">
             <router-link to="/flashcards" class="nav-link">Flashcards</router-link>
           </li>
+          <li class="nav-item">
+            <router-link to="/about" class="nav-link">About</router-link>
+          </li>
         </ul>
         <ul  v-if="username" class="navbar-nav d-flex">
           <li class="nav-item">
