@@ -4,22 +4,22 @@
     <form @submit="sendForm">
       <div class="form-row">
         <label for="username" class="form-label mt-4 required">username</label>
-        <input id="username" type="text" v-model="username" class="form-control" required>
+        <input name="username" type="text" v-model="username" class="form-control" required>
       </div>
       <div class="form-row">
         <label for="email" class="form-lable mt-4 required">email</label>
-        <input id="email" type="email" v-model="email" class="form-control" aria-describedby="emailHelp" required>
+        <input name="email" type="email" v-model="email" class="form-control" aria-describedby="emailHelp" required>
       </div>
       <div class="form-row">
         <label for="password1" class="form-lable mt-4 required">password</label>
-        <input type="password" v-model="password1" :class=password1Class @focusout="checkPassword1" required>
+        <input name="password1" type="password" v-model="password1" :class=password1Class @focusout="checkPassword1" required>
         <div v-if="password1Error" class="invalid-feedback" style="display: block;">
           {{ password1Error }}
         </div>
       </div>
       <div class="form-row">
         <label for="password2" class="form-lable mt-4 required">repeat password</label>
-        <input type="password" v-model="password2" :class="password2Class" @focusout="checkPassword2" required>
+        <input name="password2" type="password" v-model="password2" :class="password2Class" @focusout="checkPassword2" required>
         <div v-if="password2Error" class="invalid-feedback" style="display: block;">
           {{ password2Error }}
         </div>

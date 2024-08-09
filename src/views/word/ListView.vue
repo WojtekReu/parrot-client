@@ -2,8 +2,8 @@
   <div class="content-medium">
     <h1>Words</h1>
     <div class="form-row">
-      <label for="username" class="form-label mt-4 required">search word</label>
-      <input type="text" name="username" v-model="wordsFilter" class="form-control"  @keyup="searchWords()">
+      <label for="searchWord" class="form-label mt-4 required">search word</label>
+      <input type="text" name="searchWord" v-model="wordsFilter" class="form-control"  @keyup="searchWords()">
     </div>
     <div class="form-check-reverse mt-4">
       <input type="button" value="clear" class="btn btn-secondary" @click="clear">
