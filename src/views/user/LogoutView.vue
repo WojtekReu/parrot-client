@@ -32,7 +32,7 @@ export default {
       .catch(err => this.error = err.message)
       this.store.currentUser = null
       localStorage.removeItem("username")
-      window.location = "/"
+      window.location = "/login"
     }
   }
 }
