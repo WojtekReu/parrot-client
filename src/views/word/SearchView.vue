@@ -54,7 +54,7 @@ import findWords from '@/composable/findWords'
 import { useRouter } from 'vue-router'
 
 export default {
-  name: 'WordsList',
+  name: 'searchWords',
   data() {
     return {
       errors: [],

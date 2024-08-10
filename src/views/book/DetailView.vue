@@ -3,13 +3,13 @@
     <div v-if="book">
       <h1>{{ book.title }} - {{ book.author }}</h1>
     </div>
-    <p>
-      flashcard nr:
-      <input type="text" class="flashcardNr" v-model="flashcardNr" @keypress="getNextFlashcard">
+    <div class="form-row">
+      <label for="searchWord" class="form-label mt-4">Flashcard nr</label>
+      <input type="text" class="flashcardNr form-control separate" v-model="flashcardNr" @keypress="getNextFlashcard">
       <input type="hidden" v-model="flashcardNrHidden">
-      <input type="button" @click="getNextTranslation" value="Next" :disabled="nextDisabled">
-    </p>
-    <div>Your results: <span class="correct">{{ correctResults }}</span> / {{ totalResults }}</div>
+      <input type="button" @click="getNextTranslation" value="Next" :disabled="nextDisabled" class="btn btn-primary">
+    </div>
+    <div class="score">Your results: <span class="correct">{{ correctResults }}</span> / {{ totalResults }}</div>
     <div v-if="flashcardNrHidden" class="flashcard">
       <div v-if="error"></div>
       <div v-else-if="!status">Loading...</div>
@@ -24,10 +24,10 @@
         <p>
           <span class="label">EN: </span> {{ flashcard.keyword }}
         </p>
-        <p>
+        <div class="form-row">
           <span class="label">PL: </span>
-          <input type="text" v-focus v-model="typedText" @keypress="ready">
-        </p>
+          <input type="text" v-focus v-model="typedText" @keypress="ready" class="form-control typedText">
+        </div>
         <div v-if="yourAnswer">
           <p class="correct" v-if="flashcard.translations.includes(yourAnswer)">
             <span class="label">Correct! </span> {{ yourAnswer }}
@@ -38,35 +38,39 @@
       translation }}</div>
           </div>
         </div>
-        <input type="button" @click="editWords" value="Edit Words">
-        <input type="button" @click="editTranslation" value="Edit Translation">
-        <input type="button" @click="showDefinition" value="Show">
+        <input type="button" @click="editWords" class="btn btn-warning separate" value="Edit Words">
+        <input type="button" @click="editTranslation" class="btn btn-warning separate" value="Edit Translation">
+        <input type="button" @click="showDefinition" class="btn btn-warning separate" value="Show">
         <div v-if="showEditTranslation">
           <form @submit="saveTranslation">
-            <p>{{ flashcard.keyword }}</p>
-            <div v-for="translation in flashcard.translations" :key="id">
-              <input type="text" name="translation[]" :value="translation">
+            <p class="translation-edition-label">Editing translation for: {{ flashcard.keyword }}</p>
+            <div v-for="translation in flashcard.translations" :key="id" class="form-row">
+              <input type="text" name="translation[]" class="form-control" :value="translation">
             </div>
-            <input type="button" @click="addTranslation" value="+">
-            <input type="button" @click="removeTranslation" value="-"><br>
-            <input type="submit" @click="saveTranslation" value="save">
+            <div class="form-row">
+              <input type="button" @click="addTranslation" class="btn btn-sm btn-primary separate" value="add">
+              <input type="button" @click="removeTranslation" class="btn btn-sm btn-danger separate" value="remove">
+              <input type="submit" @click="saveTranslation" class="btn btn-primary separate" value="save">
+            </div>
           </form>
         </div>
         <div v-if="words.length > 0">
           <ul>
-            <li v-for="w1 in words" :key="id">{{ w1.lem }} - {{ w1.synset }} - {{ w1.definition }}</li>
+            <li v-for="w1 in words" :key="id" class="definition-row">{{ w1.lem }} - {{ w1.synset }} - {{ w1.definition }}</li>
           </ul>
         </div>
         <div v-if="showEditWords">
           <form @submit="saveChanges">
-            words:
-            <span v-for="wf in wordsFlashcard" :key="id" class="wordFlashcard">
-              <input type="radio" name="wordFlashcard" :value="wf.id" v-model="wordFlashcardInput"
-                :checked="this.wordsFlashcard[0] == wf" @change="getSentencesForWord(wf.id)">{{ wf.lem }}
-            </span>
+            <div class="definition-row">
+              Choose row for edition: 
+              <span v-for="wf in wordsFlashcard" :key="id" class="wordFlashcard">
+                <input type="radio" name="wordFlashcard" :value="wf.id" v-model="wordFlashcardInput" class=""
+                  :checked="this.wordsFlashcard[0] == wf" @change="getSentencesForWord(wf.id)">{{ wf.lem }}
+              </span>
+            </div>
             <ol class="sentences">
               <li v-for="sentence in sentencesForWord" :key="id">
-                <input type="button" @click="getWordDefinition(sentence.id)" value="Check">
+                <input type="button" @click="getWordDefinition(sentence.id)" class="btn btn-warning btn-sm separate" value="Check">
                 <input type="checkbox" checked="true" name="sentence[]" :value="sentence.id">
                 {{ sentence.sentence }}
               </li>
@@ -75,8 +79,8 @@
             <div v-if="synsets.length">
               <ol>
                 <li v-for="synset in synsets">
-                  <input type="radio" :checked="synset[0]" name="synset" :value="synset[1]"> {{ synset[1]
-                  }} - {{ synset[2] }}
+                  <input type="radio" :checked="synset[0]" name="synset" :value="synset[1]">
+                   {{ synset[1] }} - {{ synset[2] }}
                 </li>
               </ol>
               <div>
@@ -122,7 +126,7 @@ export default {
       errorMessage: null,
       totalResults: 0,
       status: null,
-      flashcardNr: '',
+      flashcardNr: 0,
       flashcardNrHidden: '',
       flashcard: null,
       message: '',
@@ -190,7 +194,7 @@ export default {
           this.error = " "
           this.message = "You completed your flashcards"
         } else {
-          this.message = "click next to show flashcard"
+          this.message = "Click next to show flashcard"
         }
       }
     },
@@ -404,19 +408,28 @@ export default {
   color: green;
 }
 
+.definition-row {
+  margin: 10px 0;
+}
+
 .incorrect {
   color: crimson;
 }
 
 .flashcardNr {
-  width: 30px;
+  width: 65px;
   text-align: center;
+  display: inline-block;
 }
 
 .flashcard {
   max-width: 650px;
   text-align: left;
   margin: 0 auto;
+}
+
+.form-row {
+  margin: 15px 0;
 }
 
 .label {
@@ -433,7 +446,27 @@ ol.sentences {
   overflow-y: auto;
 }
 
+.separate {
+  margin: 0 20px;
+}
+.score {
+  margin: 20px
+}
+
+.typedText {
+  display: inline-block;
+  width: 300px;
+}
+
+.translation-edition-label {
+  margin: 20px;
+}
+
 .wordFlashcard {
   margin-left: 5px;
+}
+
+.wordFlashcard input {
+  margin: 0 5px 0 25px;
 }
 </style>

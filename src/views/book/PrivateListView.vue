@@ -27,7 +27,9 @@
     <div v-else>
       You do not have any book yet.
     </div>
-    <router-link to="/book/add">Add book</router-link>
+    <div class="link-box">
+      <router-link to="/book/add">Add book</router-link>
+    </div>
   </div>
   <div v-else>
     <div class="login-box"><router-link to="/login">Login</router-link></div>
@@ -78,5 +80,8 @@ export default {
 <style>
 .book-list {
   margin: 0 auto;
+}
+.link-box {
+  margin: 30px 0 60px;
 }
 </style>
