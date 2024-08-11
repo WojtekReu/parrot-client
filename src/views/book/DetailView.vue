@@ -38,9 +38,11 @@
       translation }}</div>
           </div>
         </div>
-        <input type="button" @click="editWords" class="btn btn-warning separate" value="Edit Words">
-        <input type="button" @click="editTranslation" class="btn btn-warning separate" value="Edit Translation">
-        <input type="button" @click="showDefinition" class="btn btn-warning separate" value="Show">
+        <div class="form-row">
+          <input type="button" @click="editWords" class="btn btn-warning separate" value="Edit Words">
+          <input type="button" @click="editTranslation" class="btn btn-warning separate" value="Edit Translation">
+          <input type="button" @click="getDefinitions" class="btn btn-warning separate" value="Show definitions">
+        </div>
         <div v-if="showEditTranslation">
           <form @submit="saveTranslation">
             <p class="translation-edition-label">Editing translation for: {{ flashcard.keyword }}</p>
@@ -54,7 +56,7 @@
             </div>
           </form>
         </div>
-        <div v-if="words.length > 0">
+        <div v-if="showDefinition">
           <ul>
             <li v-for="w1 in words" :key="id" class="definition-row">{{ w1.lem }} - {{ w1.synset }} - {{ w1.definition }}</li>
           </ul>
@@ -136,6 +138,7 @@ export default {
       source: '',
       sentences: [],
       sentencesForWord: [],
+      showDefinition: false,
       showEditWords: false,
       showEditTranslation: false,
       word: null,
@@ -237,7 +240,8 @@ export default {
     },
     async editWords() {
       this.showEditWords = true
-      console.log(this.wordsFlashcard)
+      this.showEditTranslation = false
+      this.showDefinition = false
       if (this.wordsFlashcard.length > 0) {
         let wordId = this.wordsFlashcard[0].id
         if (this.wordFlashcardInput) {
@@ -248,6 +252,8 @@ export default {
     },
     editTranslation() {
       this.showEditTranslation = true
+      this.showEditWords = false
+      this.showDefinition = false
     },
     async getSentencesForWord(wordId) {
       await fetch(
@@ -260,7 +266,10 @@ export default {
         .then(data => this.sentencesForWord = data)
         .catch(err => this.error = err.message)
     },
-    async showDefinition() {
+    async getDefinitions() {
+      this.showEditTranslation = false
+      this.showEditWords = false
+      this.showDefinition = true
       await fetch(
         `${process.env.VUE_APP_API_URL}/flashcards/${this.flashcard.id}/words`,
           {
