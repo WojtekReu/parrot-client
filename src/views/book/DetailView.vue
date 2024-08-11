@@ -17,7 +17,7 @@
         <div v-if="sentences">
           <ol class="sentences">
             <li v-for="sentence in sentences" :key="id">
-              {{ sentence.sentence }}
+              <span v-html="boldKeyword(sentence.sentence, flashcard.keyword)"></span>
             </li>
           </ol>
         </div>
@@ -399,6 +399,10 @@ export default {
     writeTranslation(translation) {
       let last = this.flashcard.translations.length - 1
       this.flashcard.translations[last] = translation
+    },
+    boldKeyword(sentence, keyword) {
+      const position = sentence.indexOf(keyword)
+      return sentence.substring(0, position) + "<b>" + keyword + "</b>" + sentence.substring(position + keyword.length)
     }
   },
   mounted() {
