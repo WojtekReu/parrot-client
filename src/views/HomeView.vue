@@ -14,15 +14,35 @@
       <li>
         Add search engine address <a href="https://parrot.reu.pl">https://parrot.reu.pl</a> to your web browser (ex. Firefox). 
         Set this new entry as default search engine for browser.<br>
-        <img src="/img/1_Screenshot_Firefox.jpg" alt="Screanshot for Edytuj wyszukiwarkę">
+        <img src="/img/1_Screenshot_Firefox.jpg" alt="Screenshot for Edytuj wyszukiwarkę">
       </li>
       <li>
-        Any time when you find an incomprehensible word, select this word and click "Przetłumacz"<br>
-        <img src="/img/2_Screenshot_ReadEra.jpg" alt="Translate Word">
+        Before you can add new flashcard click "więcej" to configure translator<br>
+        <img src="/img/2_Screenshot_ReadEra.jpg" alt="1 Screenshot ReadEra">
       </li>
       <li>
-        Add flashcard to your list<br>
-        <img src="/img/3_Screenshot_Firefox.jpg" alt="Add definition to your flashcards">
+        Click "DOSTOSUJ"<br>
+        <img src="/img/3_Screenshot_ReadEra.jpg" alt="2 Screenshot ReadEra">
+      </li>
+      <li>
+        Click "Tłumacz"<br>
+        <img src="/img/4_Screenshot_ReadEra.jpg" alt="3 Screenshot ReadEra">
+      </li>
+      <li>
+        Click "DODAJ APLIKACJĘ"<br>
+        <img src="/img/5_Screenshot_ReadEra.jpg" alt="4 Screenshot ReadEra">
+      </li>
+      <li>
+        Choose Firefox or browser where have you configured search engine.<br>
+        <img src="/img/6_Screenshot_ReadEra.jpg" alt="5 Screenshot ReadEra">
+      </li>
+      <li>
+        Now you can click "Przetłumacz" to tranlate word and add to flashcards<br>
+        <img src="/img/2_Screenshot_ReadEra.jpg" alt="1 Screenshot ReadEra">
+      </li>
+      <li>
+        Now you can add flashcard to your list<br>
+        <img src="/img/7_Screenshot_Firefox.jpg" alt="Screenshot add definition to your flashcards">
       </li>
       <li>
         When you want to practice words go <RouterLink to="/account/books">Book list</RouterLink>
