@@ -1,14 +1,16 @@
 <template>
   <div class="content-medium">
-    <h1>Your account</h1>
-    <div v-if="store.currentUser">
-    <div v-if="showEdit">
-      <UserEdit :form="form" :updateUserAction="updateUserAction"/>
-    </div>
-    <div v-else>
-      <User :user="store.currentUser"/>
-      <input type="button" value="Edit" class="btn btn-warning" @click="editUser">
-    </div>
+    <h1 class="mt-4">Your account</h1>
+    <div class="container" v-if="store.currentUser">
+      <div v-if="showEdit">
+        <UserEdit :form="form" :updateUserAction="updateUserAction" :cancelUserAction="cancelUserAction"/>
+      </div>
+      <div v-else>
+        <User :user="store.currentUser"/>
+        <div class="mt-4 d-md-flex justify-content-md-end">
+          <input type="button" value=" Edit " class="btn btn-warning" @click="editUser">
+        </div>
+      </div>
     </div>
     <div v-if="error" class="invalid-feedback" style="display: block;">
       {{ error }}
@@ -49,6 +51,9 @@ export default {
     async updateUserAction(submitEvent) {
       submitEvent.preventDefault()
       this.updateUser(this.store.currentUser.id, this.form)
+      this.showEdit = false
+    },
+    async cancelUserAction() {
       this.showEdit = false
     }
   }
