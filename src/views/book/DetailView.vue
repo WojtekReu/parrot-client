@@ -41,7 +41,7 @@
         <div class="form-row">
           <input type="button" @click="editWords" class="btn btn-warning separate" value="Edit Words">
           <input type="button" @click="editTranslation" class="btn btn-warning separate" value="Edit Translation">
-          <input type="button" @click="getDefinitions" class="btn btn-warning separate" value="Show definitions">
+          <input type="button" @click="getDefinitions" class="btn btn-primary separate" value="Show definitions">
         </div>
         <div v-if="showEditTranslation">
           <form @submit="saveTranslation">
@@ -50,13 +50,14 @@
               <input type="text" name="translation[]" class="form-control" :value="translation">
             </div>
             <div class="form-row">
-              <input type="button" @click="addTranslation" class="btn btn-sm btn-primary separate" value="add">
+              <input type="button" @click="addTranslation" class="btn btn-sm btn-warning separate" value="add new">
               <input type="button" @click="removeTranslation" class="btn btn-sm btn-danger separate" value="remove">
               <input type="submit" @click="saveTranslation" class="btn btn-primary separate" value="save">
             </div>
           </form>
         </div>
         <div v-if="showDefinition">
+          Definitions:
           <ul>
             <li v-for="w1 in words" :key="id" class="definition-row">{{ w1.lem }} - {{ w1.synset }} - {{ w1.definition }}</li>
           </ul>

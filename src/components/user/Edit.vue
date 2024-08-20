@@ -1,6 +1,6 @@
 <template>
   <div class="content-medium">
-    <form @submit="updateUserAction">
+    <form class="form-edit" @submit="updateUserAction">
       <div class="form-row">
         <label for="username" class="col form-label mt-4 required">Username:</label>
         <input type="text" name="username" v-model="form.username" class="col form-control">
@@ -28,11 +28,11 @@ export default {
 </script>
 
 <style>
-label.form-label {
+.form-edit label.form-label {
   width: 40%;
   text-align: center;
 }
-input.form-control {
+form-edit input.form-control {
   display: inline-block;
   width: 60%;
 }
