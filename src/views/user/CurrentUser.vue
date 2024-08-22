@@ -12,6 +12,9 @@
         </div>
       </div>
     </div>
+    <div v-else>
+      Loading ... <img src="/img/Loading_icon.gif" class="loadingIcon" width="120px" height="80px">
+    </div>
     <div v-if="error" class="invalid-feedback" style="display: block;">
       {{ error }}
     </div>
