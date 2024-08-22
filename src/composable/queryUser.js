@@ -4,7 +4,7 @@ import { ref } from 'vue'
 const queryUser = () => {
   const error = ref(null)
 
-  const getUser = async (userId) => {
+  const getUser = async () => {
     await fetch(
       `${APISettings.APIUrl}/users/whoami`,
       {
@@ -20,12 +20,12 @@ const queryUser = () => {
     })
     .then(data => {
       if (data.detail !== undefined && data.detail !== "") {
-        error = data.detail
+        error.value = data.detail
       } else {
         store.currentUser = data
       }
     })
-    .catch(err => error = err.message)
+    .catch(err => error.value = err.message)
   }
 
   const updateUser = async (userId, data) => {
@@ -40,7 +40,7 @@ const queryUser = () => {
     ) 
     .then(response => response.json())
     .then(data => store.currentUser = data)
-    .catch(err => error = err.message)
+    .catch(err => error.value = err.message)
   }
 
   return { error, getUser, updateUser }

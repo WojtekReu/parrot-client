@@ -32,7 +32,7 @@ export default {
   width: 40%;
   text-align: center;
 }
-form-edit input.form-control {
+.form-edit input.form-control {
   display: inline-block;
   width: 60%;
 }
