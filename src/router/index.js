@@ -39,6 +39,12 @@ const routes = [
     props: true
   },
   {
+    path: '/flashcard/:id',
+    name: 'flashcard',
+    component: () => import('../views/flashcard/DetailView.vue'),
+    props: true
+  },
+  {
     path: '/flashcards',
     name: 'flashcards',
     component: () => import(/* webpackChunkName: "flashcards" */ '../views/flashcard/ListView.vue')

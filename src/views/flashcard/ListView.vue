@@ -1,7 +1,6 @@
 <template>
-  <h1>Flashcards</h1>
-  <div v-if="username">
-    <p>{{ username }}`s flashcards</p>
+  <h1 class="mt-4">Flashcards</h1>
+  <div class="mt-4" v-if="username">
     <div v-if="flashcards">
       <table id="flashcards">
         <tr>
@@ -11,7 +10,7 @@
         </tr>
         <tr v-for="(flashcard, index) in flashcards.items" :key="flashcard.id">
           <td>{{ index + 1 }}</td>
-          <td>{{ flashcard.keyword }}</td>
+          <td><router-link :to="{ name: 'flashcard', params: { id: flashcard.id }}">{{ flashcard.keyword }}</router-link></td>
           <td>
             <div v-for="translation in flashcard.translations">{{ translation }}</div>
           </td>
@@ -53,7 +52,6 @@ export default {
     }
   },
   mounted() {
-
     this.username = localStorage.getItem('username')
   }
 }
