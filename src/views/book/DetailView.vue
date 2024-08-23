@@ -73,22 +73,22 @@
             </div>
             <ol class="sentences">
               <li v-for="sentence in sentencesForWord" :key="id">
-                <input type="button" @click="getWordDefinition(sentence.id)" class="btn btn-warning btn-sm separate" value="Check">
+                <input type="button" @click="getWordDefinition(sentence.id)" class="btn btn-warning btn-sm me-md-2" value="Check">
                 <input type="checkbox" checked="true" name="sentence[]" :value="sentence.id">
                 {{ sentence.sentence }}
               </li>
             </ol>
-            <div v-if="word">word.lem = {{ word.lem }}</div>
-            <div v-if="synsets.length">
+            <div v-if="word" class="mt-4">word.lem = {{ word.lem }}</div>
+            <div v-if="synsets.length" class="mt-4">
               <ol>
                 <li v-for="synset in synsets">
                   <input type="radio" :checked="synset[0]" name="synset" :value="synset[1]">
                    {{ synset[1] }} - {{ synset[2] }}
                 </li>
               </ol>
-              <div>
-                <input type="submit" @click="saveChanges()" value="Save">
-                <input type="button" @click="cancelChanges()" value="Cancel">
+              <div class="gap-2 mt-4 mb-5 d-md-flex justify-content-md-end">
+                <input type="submit" @click="saveChanges()" class="btn btn-primary btn-sm me-md-2" value="Save">
+                <input type="button" @click="cancelChanges()" class="btn btn-secondary btn-sm " value="Cancel">
               </div>
             </div>
             <div v-else-if="errorMessage" class="invalid-feedback" style="display: block;">
