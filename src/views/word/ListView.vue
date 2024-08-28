@@ -11,9 +11,11 @@
     <div v-if="error" class="invalid-feedback" style="display: block;">
       {{ error }}
     </div>
+    <p class="text-left mt-4">Definitions from NLTK wordnet</p>
     <ol>
-      <li v-for="word in wordsList" :key="word.id" class="word-element">
-        {{ word.lem }}, {{ word.pos }}, {{ word.synset }}, {{ word.declination }} - {{ word.definition }}
+      <li v-for="synset in synsetsData.synsets" :key="synset.name" class="word-element">
+        {{ synset.name }} - {{ synset.definition }}<br>
+        <span class="translation">{{ synset.pol }}</span>
       </li>
     </ol>
   </div>
@@ -26,19 +28,19 @@ export default {
     return {
       error: '',
       wordsFilter: '',
-      wordsList: []
+      synsetsData: {},
     }
   },
   methods: {
     clear() {
       this.wordsFilter = '',
-      this.wordsList = []
+      this.synsetsData = {}
     },
     async searchWords() {
       if (this.wordsFilter) {
-        await fetch(`${process.env.VUE_APP_API_URL}/words/find/${this.wordsFilter}`)
+        await fetch(`${process.env.VUE_APP_API_URL}/translation/synsets/${this.wordsFilter}`)
           .then(response => response.json())
-          .then(data => this.wordsList = data)
+          .then(data => this.synsetsData = data)
           .catch(err => this.error = err.message)
       }
     }
@@ -49,5 +51,9 @@ export default {
 <style>
 .word-element {
   text-align: left;
+}
+.translation {
+  font-style: italic;
+  color: #822;
 }
 </style>
