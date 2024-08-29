@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 
-const findTranslation = (wordStr) => {
+const findTranslation = () => {
   const translation = ref(null)
   const error = ref(null)
 
-  const loadFindTranslation = async () => {
+  const loadFindTranslation = async (wordStr) => {
     await fetch(`${process.env.VUE_APP_API_URL}/translation/find/${wordStr}`)
     .then(response => response.json())
     .then(data => translation.value = data)

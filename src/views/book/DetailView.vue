@@ -470,6 +470,7 @@ ol.sentences {
 .typedText {
   display: inline-block;
   width: 300px;
+  max-width: 70%;
 }
 
 .translation-edition-label {

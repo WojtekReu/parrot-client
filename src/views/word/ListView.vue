@@ -11,9 +11,16 @@
     <div v-if="error" class="invalid-feedback" style="display: block;">
       {{ error }}
     </div>
-    <p class="text-left mt-4">Definitions from NLTK wordnet</p>
+    <p class="keyword">word: {{ wordsFilter }}</p>
+    <div class="text-center">Engish - Polish Piotrowski+Saloni/FreeDict dictionary</div>
+    <div v-if="translation && translation.definition" class="text-left small">
+      <div v-for="line in translation.definition.split('\n')">
+        {{ line }}
+      </div>
+    </div>
+    <p class="text-center mt-4">NLTK WordNet definitions</p>
     <ol>
-      <li v-for="synset in synsetsData.synsets" :key="synset.name" class="word-element">
+      <li v-for="synset in synsets.synsets" :key="synset.name" class="word-element">
         {{ synset.name }} - {{ synset.definition }}<br>
         <span class="translation">{{ synset.pol }}</span>
       </li>
@@ -22,26 +29,31 @@
 </template>
 
 <script>
+import findTranslation from '@/composable/findTranslation'
+import findSynsets from '@/composable/synsets'
 export default {
-  name: 'WordsList',
+  name: 'words',
   data() {
     return {
-      error: '',
       wordsFilter: '',
-      synsetsData: {},
     }
+  },
+  setup() {
+    const { translation, error, loadFindTranslation } = findTranslation()
+    const { synsets, error2, loadFindSynsets } = findSynsets()
+    
+    return { translation, synsets, error, loadFindTranslation, loadFindSynsets }
   },
   methods: {
     clear() {
-      this.wordsFilter = '',
+      this.wordsFilter = ''
       this.synsetsData = {}
+      this.translation = {}
     },
     async searchWords() {
       if (this.wordsFilter) {
-        await fetch(`${process.env.VUE_APP_API_URL}/translation/synsets/${this.wordsFilter}`)
-          .then(response => response.json())
-          .then(data => this.synsetsData = data)
-          .catch(err => this.error = err.message)
+        this.loadFindTranslation(this.wordsFilter)
+        this.loadFindSynsets(this.wordsFilter)
       }
     }
   }

@@ -1,13 +1,13 @@
 <template>
-  <div id="container">
-    <p class="text-center">Translation for: <span class="keyword">{{ wordStr }}</span></p>
-    <div v-if="translation && translation.definition" class="word-element">
+  <div class="content-medium">
+    <p class="text-center small">Engish - Polish Piotrowski+Saloni/FreeDict dictionary: <span class="keyword">{{ wordStr }}</span></p>
+    <div v-if="translation && translation.definition" class="text-left small">
       <div v-for="line in translation.definition.split('\n')">
         {{ line }}
       </div>
     </div>
     <div v-if="words.length > 0">
-      <p class="text-center">Definitions:</p>
+      <p class="text-center">WordNet definitions:</p>
       <ol>
         <li v-for="word in words" :key="word.id" class="word-element">
           <input type="radio" :value="word.id" v-model="pickedWordId">  {{ word.lem }} ({{ word.pos }}): {{ word.definition }}
@@ -54,7 +54,7 @@ import findWords from '@/composable/findWords'
 import { useRouter } from 'vue-router'
 
 export default {
-  name: 'searchWords',
+  name: 'wordsSearch',
   data() {
     return {
       errors: [],
@@ -95,8 +95,8 @@ export default {
       this.flashcards = flashcards
     },
     async loadTranslation() {
-      const { translation, error, loadFindTranslation } = findTranslation(this.wordStr)
-      loadFindTranslation()
+      const { translation, error, loadFindTranslation } = findTranslation()
+      loadFindTranslation(this.wordStr)
       if (error.value) {
         this.errors.push(error)
       }
@@ -167,12 +167,6 @@ export default {
 </script>
 
 <style>
-
-#container {
-  text-align: left;
-  margin: 5%
-}
-
 .keyword {
   font-weight: bold;
   color: maroon;
@@ -181,9 +175,4 @@ export default {
 .word-element {
   text-align: left;
 }
-
-nav.navbar {
-  display: none;
-}
-
 </style>
