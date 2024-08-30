@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 
-const findFlashcards = (wordStr) => {
+const findFlashcards = () => {
   const flashcards = ref(null)
   const error = ref(null)
 
-  const loadFindFlashcards = async () => {
+  const loadFindFlashcards = async (wordStr) => {
     await fetch(
       `${process.env.VUE_APP_API_URL}/flashcards/find/${wordStr}`,
       {

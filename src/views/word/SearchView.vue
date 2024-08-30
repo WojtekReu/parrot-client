@@ -87,8 +87,8 @@ export default {
   },
   methods: {
     async loadFlashcards() {
-      const { flashcards, error, loadFindFlashcards } = findFlashcards(this.wordStr)
-      loadFindFlashcards()
+      const { flashcards, error, loadFindFlashcards } = findFlashcards()
+      loadFindFlashcards(this.wordStr)
       if (error.value) {
         this.errors.push(error)
       }
