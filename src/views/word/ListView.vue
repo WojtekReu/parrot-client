@@ -93,6 +93,15 @@ export default {
     async createFlashcard() {
       console.log(this.wordsFilter, this.translationField, this.synsetRadio)
     }
+  },
+  watch: {
+    synsetRadio () {
+      this.synsets.synsets.forEach(synset => {
+        if (this.synsetRadio == synset.name) {
+          this.translationField = synset.pol
+        }
+      })
+    }
   }
 }
 </script>
