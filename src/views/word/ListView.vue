@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import loadAddFlashcard from '@/composable/addFlashcard'
 import findFlashcards from '@/composable/findFlashcards'
 import findSentences from '@/composable/findSentences'
 import findTranslation from '@/composable/findTranslation'
@@ -66,8 +67,21 @@ export default {
     const { synsets, error2, loadFindSynsets } = findSynsets()
     const { flashcards, error3, loadFindFlashcards } = findFlashcards()
     const { sentences, error4, loadFindSentences } = findSentences()
+    const { flashcard, error5, addFlashcard } = loadAddFlashcard()
 
-    return { flashcards, translation, sentences, synsets, error, loadFindTranslation, loadFindSynsets, loadFindFlashcards, loadFindSentences }
+    return { 
+      flashcards,
+      flashcard,
+      translation,
+      sentences,
+      synsets,
+      error,
+      addFlashcard,
+      loadFindTranslation,
+      loadFindSynsets,
+      loadFindFlashcards,
+      loadFindSentences,
+    }
   },
   mounted () {
     const router = useRouter()
@@ -92,6 +106,7 @@ export default {
     },
     async createFlashcard() {
       console.log(this.wordsFilter, this.translationField, this.synsetRadio)
+      this.addFlashcard(this.wordsFilter, [this.translationField])
     }
   },
   watch: {
