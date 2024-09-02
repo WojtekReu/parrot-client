@@ -3,7 +3,7 @@
     <h1>Search Word</h1>
     <div class="form-row mt-2">
       <label for="searchWord" class="form-label required size-20">search word</label>
-      <input type="text" name="searchWord" v-model="wordsFilter" class="form-control size-50">
+      <input type="text" name="searchWord" v-model="word" class="form-control size-50">
       <input type="button" value="search" class="btn btn-primary" @click="searchWords">
       <input type="button" value="clear" class="btn btn-secondary" @click="clear">
     </div>
@@ -40,7 +40,7 @@
     </ol>
     <p class="text-center mt-4">Sentences</p>
     <p v-for="sentence in sentences" :key="sentence.id">
-      <input type="checkbox" :value="sentence.id">
+      <input type="checkbox" :value="sentence.id" v-model="sentencesChecked">
       {{ sentence.sentence }}
     </p>
   </div>
@@ -52,22 +52,26 @@ import findFlashcards from '@/composable/findFlashcards'
 import findSentences from '@/composable/findSentences'
 import findTranslation from '@/composable/findTranslation'
 import findSynsets from '@/composable/synsets'
+import loadUpdateFlashcardSentences from '@/composable/updateFlashcardSentences'
 import { useRouter } from 'vue-router'
 export default {
   name: 'words',
   data() {
     return {
+      error: '',
+      sentencesChecked: [],
       synsetRadio: '',
       translationField: '',
-      wordsFilter: '',
+      word: '',
     }
   },
   setup() {
-    const { translation, error, loadFindTranslation } = findTranslation()
+    const { translation, error1, loadFindTranslation } = findTranslation()
     const { synsets, error2, loadFindSynsets } = findSynsets()
     const { flashcards, error3, loadFindFlashcards } = findFlashcards()
     const { sentences, error4, loadFindSentences } = findSentences()
     const { flashcard, error5, addFlashcard } = loadAddFlashcard()
+    const { error6, updateFlashcardSentences } = loadUpdateFlashcardSentences()
 
     return { 
       flashcards,
@@ -75,38 +79,42 @@ export default {
       translation,
       sentences,
       synsets,
-      error,
       addFlashcard,
       loadFindTranslation,
       loadFindSynsets,
       loadFindFlashcards,
       loadFindSentences,
+      updateFlashcardSentences,
     }
   },
   mounted () {
     const router = useRouter()
     const query = router.currentRoute.value.query
 
-    this.wordsFilter = query.q
+    this.word = query.q
     this.searchWords()
   },
   methods: {
     clear() {
-      this.wordsFilter = ''
+      this.word = ''
       this.synsets = {}
       this.translation = {}
     },
     async searchWords() {
-      if (this.wordsFilter) {
-        this.loadFindFlashcards(this.wordsFilter)
-        this.loadFindTranslation(this.wordsFilter)
-        this.loadFindSynsets(this.wordsFilter)
-        this.loadFindSentences(this.wordsFilter)
+      if (this.word) {
+        this.loadFindFlashcards(this.word)
+        this.loadFindTranslation(this.word)
+        this.loadFindSynsets(this.word)
+        this.loadFindSentences(this.word)
       }
     },
     async createFlashcard() {
-      console.log(this.wordsFilter, this.translationField, this.synsetRadio)
-      this.addFlashcard(this.wordsFilter, [this.translationField])
+      console.log('asdfasdf asdfasdf')
+      if (this.translationField !== '') {
+        this.addFlashcard(this.word, [this.translationField])
+      } else {
+        this.error = "The translation is empty"
+      }
     }
   },
   watch: {
@@ -116,6 +124,12 @@ export default {
           this.translationField = synset.pol
         }
       })
+    },
+    flashcard () {
+      this.flashcards.push(this.flashcard)
+      if (this.sentencesChecked !== '') {
+        this.updateFlashcardSentences(this.flashcard.id, this.sentencesChecked)
+      }
     }
   }
 }
