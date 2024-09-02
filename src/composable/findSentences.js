@@ -1,10 +1,9 @@
 import { ref } from 'vue'
 
-const findSentences = () => {
+const loadFindSentences = (error) => {
   const sentences = ref([])
-  const error = ref(null)
 
-  const loadFindSentences = async (wordStr) => {
+  const findSentences = async (wordStr) => {
     await fetch(
       `${process.env.VUE_APP_API_URL}/sentences/search?q=${wordStr}`,
       {
@@ -16,7 +15,7 @@ const findSentences = () => {
     .catch(err => error.value = err)
   }
 
-  return { sentences, error, loadFindSentences }
+  return { sentences, findSentences }
 }
 
-export default findSentences
+export default loadFindSentences

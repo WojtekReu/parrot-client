@@ -1,17 +1,16 @@
 import { ref } from 'vue'
 
-const findSynsets = () => {
+const loadFindSynsets = (error) => {
   const synsets = ref({})
-  const error2 = ref(null)
 
-  const loadFindSynsets = async (wordStr) => {
+  const findSynsets = async (wordStr) => {
     await fetch(`${process.env.VUE_APP_API_URL}/translation/synsets/${wordStr}`)
     .then(response => response.json())
     .then(data => synsets.value = data)
-    .catch(err => error2.value = err)
+    .catch(err => error.value = err)
   }
 
-  return { synsets, error2, loadFindSynsets }
+  return { synsets, findSynsets }
 }
 
-export default findSynsets
+export default loadFindSynsets

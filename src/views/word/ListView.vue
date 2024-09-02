@@ -48,17 +48,17 @@
 
 <script>
 import loadAddFlashcard from '@/composable/addFlashcard'
-import findFlashcards from '@/composable/findFlashcards'
-import findSentences from '@/composable/findSentences'
-import findTranslation from '@/composable/findTranslation'
-import findSynsets from '@/composable/synsets'
+import loadFindFlashcards from '@/composable/findFlashcards'
+import loadFindSentences from '@/composable/findSentences'
+import loadFindTranslation from '@/composable/findTranslation'
+import loadFindSynsets from '@/composable/synsets'
 import loadUpdateFlashcardSentences from '@/composable/updateFlashcardSentences'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 export default {
   name: 'words',
   data() {
     return {
-      error: '',
       sentencesChecked: [],
       synsetRadio: '',
       translationField: '',
@@ -66,24 +66,26 @@ export default {
     }
   },
   setup() {
-    const { translation, error1, loadFindTranslation } = findTranslation()
-    const { synsets, error2, loadFindSynsets } = findSynsets()
-    const { flashcards, error3, loadFindFlashcards } = findFlashcards()
-    const { sentences, error4, loadFindSentences } = findSentences()
-    const { flashcard, error5, addFlashcard } = loadAddFlashcard()
-    const { error6, updateFlashcardSentences } = loadUpdateFlashcardSentences()
+    const error = ref(null)
+    const { translation, findTranslation } = loadFindTranslation(error)
+    const { synsets, findSynsets } = loadFindSynsets(error)
+    const { flashcards, findFlashcards } = loadFindFlashcards(error)
+    const { sentences, findSentences } = loadFindSentences(error)
+    const { flashcard, message, addFlashcard } = loadAddFlashcard()
+    const { updateFlashcardSentences } = loadUpdateFlashcardSentences(error)
 
     return { 
+      error,
       flashcards,
       flashcard,
       translation,
       sentences,
       synsets,
       addFlashcard,
-      loadFindTranslation,
-      loadFindSynsets,
-      loadFindFlashcards,
-      loadFindSentences,
+      findTranslation,
+      findSynsets,
+      findFlashcards,
+      findSentences,
       updateFlashcardSentences,
     }
   },
@@ -102,14 +104,13 @@ export default {
     },
     async searchWords() {
       if (this.word) {
-        this.loadFindFlashcards(this.word)
-        this.loadFindTranslation(this.word)
-        this.loadFindSynsets(this.word)
-        this.loadFindSentences(this.word)
+        this.findFlashcards(this.word)
+        this.findTranslation(this.word)
+        this.findSynsets(this.word)
+        this.findSentences(this.word)
       }
     },
     async createFlashcard() {
-      console.log('asdfasdf asdfasdf')
       if (this.translationField !== '') {
         this.addFlashcard(this.word, [this.translationField])
       } else {
@@ -127,7 +128,7 @@ export default {
     },
     flashcard () {
       this.flashcards.push(this.flashcard)
-      if (this.sentencesChecked !== '') {
+      if (this.sentencesChecked.length > 0) {
         this.updateFlashcardSentences(this.flashcard.id, this.sentencesChecked)
       }
     }

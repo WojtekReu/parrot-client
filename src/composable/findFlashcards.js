@@ -1,10 +1,9 @@
 import { ref } from 'vue'
 
-const findFlashcards = () => {
+const loadFindFlashcards = (error) => {
   const flashcards = ref(null)
-  const error = ref(null)
 
-  const loadFindFlashcards = async (wordStr) => {
+  const findFlashcards = async (wordStr) => {
     await fetch(
       `${process.env.VUE_APP_API_URL}/flashcards/find/${wordStr}`,
       {
@@ -16,7 +15,7 @@ const findFlashcards = () => {
       .catch(err => error.value = err.message)
   }
 
-  return { flashcards, error, loadFindFlashcards }
+  return { flashcards, findFlashcards }
 }
 
-export default findFlashcards
+export default loadFindFlashcards

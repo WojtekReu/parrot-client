@@ -1,9 +1,6 @@
 import { APISettings } from '@/store'
-import { ref } from 'vue'
 
-const loadUpdateFlashcardSentences = () => {
-  const error = ref(null)
-
+const loadUpdateFlashcardSentences = (error) => {
   const updateFlashcardSentences = async (flashcardId, sentenceIds) => {
     await fetch(
       `${APISettings.APIUrl}/flashcards/${flashcardId}/sentences`,
@@ -14,11 +11,15 @@ const loadUpdateFlashcardSentences = () => {
         credentials: "include",
       }
     )
-      .then(response => response.json())
+      .then(response => {
+        if (response.status !== 204) {
+          error.value = response.statusText
+        }
+      })
       .catch(err => error.value = err.message)
   }
 
-  return { error, updateFlashcardSentences }
+  return { updateFlashcardSentences }
 }
 
 export default loadUpdateFlashcardSentences
