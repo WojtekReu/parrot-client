@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
 const loadFindFlashcards = (error) => {
-  const flashcards = ref(null)
+  const flashcards = ref([])
 
   const findFlashcards = async (wordStr) => {
     await fetch(

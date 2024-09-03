@@ -7,42 +7,47 @@
       <input type="button" value="search" class="btn btn-primary" @click="searchWords">
       <input type="button" value="clear" class="btn btn-secondary" @click="clear">
     </div>
-    <div class="form-row mt-2">
-      <label for="translation" class="form-label required size-20">translation</label>
-      <input type="text" name="translation" v-model="translationField" class="form-control size-50">
-      <input type="button" value="flashcard" class="btn btn-warning" @click="createFlashcard">
-    </div>
-
     <div v-if="error" class="invalid-feedback" style="display: block;">
       {{ error }}
     </div>
-    <div v-if="flashcards">
+    <div v-if="flashcards.length > 0">
       <p>Flashcards</p>
       <ul class="text-left mt-4">
         <li v-for="flashcard in flashcards" :key="flashcard.id">
-          {{ flashcard.keyword }} - {{ flashcard.translations }}
+          <router-link :to="{ name: 'flashcard', params: { id: flashcard.id }}">{{ flashcard.keyword }}</router-link>:
+          <span v-for="t in flashcard.translations">{{ t }}, </span>
         </li>
       </ul>
     </div>
-    <div class="text-center">Engish - Polish Piotrowski+Saloni/FreeDict dictionary</div>
     <div v-if="translation && translation.definition" class="text-left small">
+      <div class="text-center">Engish - Polish Piotrowski+Saloni/FreeDict dictionary</div>
       <div v-for="line in translation.definition.split('\n')">
         {{ line }}
       </div>
     </div>
-    <p class="text-center mt-4">NLTK WordNet definitions</p>
-    <ol>
-      <li v-for="synset in synsets.synsets" :key="synset.name" class="word-element">
-        <input type="radio" :id="synset.name" :value="synset.name" v-model="synsetRadio">
-        {{ synset.name }} - {{ synset.definition }}<br>
-        <span class="translation">{{ synset.pol }}</span>
-      </li>
-    </ol>
-    <p class="text-center mt-4">Sentences</p>
-    <p v-for="sentence in sentences" :key="sentence.id">
-      <input type="checkbox" :value="sentence.id" v-model="sentencesChecked">
-      {{ sentence.sentence }}
-    </p>
+    <div v-if="synsets.synsets">
+      <p class="text-center mt-4">NLTK WordNet definitions</p>
+      <ol>
+        <li v-for="synset in synsets.synsets" :key="synset.name" class="word-element">
+          <input type="radio" :id="synset.name" :value="synset.name" v-model="synsetRadio">
+          {{ synset.name }} - {{ synset.definition }}<br>
+          <span class="translation">{{ synset.pol }}</span>
+        </li>
+      </ol>
+    </div>
+    <div v-if="sentences.length > 0">
+      <p class="text-center mt-4">Sentences</p>
+      <p v-for="sentence in sentences" :key="sentence.id">
+        <input type="checkbox" :value="sentence.id" v-model="sentencesChecked">
+        {{ sentence.sentence }}
+      </p>
+    </div>
+    <div v-if="synsets.synsets || translation" class="form-row mt-2 bottom-5">
+      <h2>Flashcard</h2>
+      <label for="translation" class="form-label required size-20">translation</label>
+      <input type="text" name="translation" v-model="translationField" class="form-control size-50">
+      <input type="button" value="Add flashcard" class="btn btn-warning" @click="createFlashcard">
+    </div>
   </div>
 </template>
 
@@ -99,8 +104,10 @@ export default {
   methods: {
     clear() {
       this.word = ''
+      this.flashcards = []
       this.synsets = {}
       this.translation = {}
+      this.sentences = []
     },
     async searchWords() {
       if (this.word) {
@@ -153,5 +160,9 @@ export default {
 .size-20 {
   display: inline-block;
   width: 20%;
+}
+
+.bottom-5 {
+  margin-bottom: 5%
 }
 </style>
