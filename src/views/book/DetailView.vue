@@ -283,6 +283,7 @@ export default {
     },
     async getWordDefinition(sentence_id) {
         let wordId = this.wordsFlashcard[0].id
+	      this.synsets = []
         if (this.wordFlashcardInput) {
           wordId = this.wordFlashcardInput
         }
