@@ -48,8 +48,8 @@
 </template>
 
 <script>
-import findFlashcards from '@/composable/findFlashcards'
-import findTranslation from '@/composable/findTranslation'
+import loadFindFlashcards from '@/composable/findFlashcards'
+import loadFindTranslation from '@/composable/findTranslation'
 import findWords from '@/composable/findWords'
 import { useRouter } from 'vue-router'
 
@@ -72,12 +72,16 @@ export default {
       words: [],
     }
   },
+  setup() {
+    const error = ref(null)
+  },
   mounted() {
     const router = useRouter()
     const query = router.currentRoute.value.query
     if (query.q) {
       this.form.keyword = this.wordStr = query.q
       this.username = localStorage.getItem("username")
+
       if (this.username) {
         this.loadFlashcards()
       }
@@ -87,16 +91,18 @@ export default {
   },
   methods: {
     async loadFlashcards() {
-      const { flashcards, error, loadFindFlashcards } = findFlashcards()
-      loadFindFlashcards(this.wordStr)
+      const error = ref(null)
+      const { flashcards, findFlashcards } = loadFindFlashcards(error)
+      findFlashcards(this.wordStr)
       if (error.value) {
         this.errors.push(error)
       }
       this.flashcards = flashcards
     },
     async loadTranslation() {
-      const { translation, error, loadFindTranslation } = findTranslation()
-      loadFindTranslation(this.wordStr)
+      const error = ref(null)
+      const { translation, findTranslation } = loadFindTranslation(error)
+      findTranslation(this.wordStr)
       if (error.value) {
         this.errors.push(error)
       }
