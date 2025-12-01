@@ -12,8 +12,9 @@
         book reader to use parrot
       </li>
       <li>
-        Add search engine address <a href="https://parrot.reu.pl">https://parrot.reu.pl</a> to your web browser (ex. Firefox). 
-        Set this new entry as default search engine for browser.<br>
+	Add the search engine address<br>
+	<RouterLink to="/words/search?q=%s">http://localhost:8080/words/search?q=%s</RouterLink><br>
+	to your web browser (e.g. Firefox) and set this new entry as default search engine for your browser.<br>
         <img src="/img/1_Screenshot_Firefox.jpg" alt="Screenshot for Edytuj wyszukiwarkę">
       </li>
       <li>
