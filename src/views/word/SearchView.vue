@@ -51,6 +51,7 @@
 import loadFindFlashcards from '@/composable/findFlashcards'
 import loadFindTranslation from '@/composable/findTranslation'
 import findWords from '@/composable/findWords'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
